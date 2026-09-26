@@ -10,38 +10,29 @@
     "joggle/hoist-to-domain": "warn",
     "joggle/unaccounted-drop": "warn",
     "joggle/meaning-switched-by-flag": "warn",
-    "joggle/generic-carries-a-caller": "warn"
+    "joggle/generic-carries-a-caller": "warn",
+    "joggle/single-path": "warn"
   },
   "ignore": [
     {
       "rule": "joggle/single-path",
       "path": "extensions/**",
-      "reason": "single-path reports a template literal in a file that also calls a helper it believes produces the same display value. Eleven of its twelve findings here are the English prose of a tool description or a report line -- 'Run the \"build\" script of services/rest with pnpm' -- and the helper it names (matchesPattern, errorText, readJson) produces neither a description nor a report line. The rule is right about the shape and wrong about the value, and rewording a tool's description to silence it would be the tool writing the documentation."
+      "reason": "This rule is JUDGED. It reports every string site inside a unit whose file also calls any helper that two or more files call, and then asks a model whether the helper already produces that value. It never decides the value itself, so this exception is not a claim that the rule is wrong -- it is noise control on a machine with no TYPESAFE_API_KEY, where onUnavailable: 'report' prints every candidate as an unverified warning. All twelve candidates were the English prose of a tool description or of a report line, and no helper in this repository produces either. The exception is scoped to extensions/** so that the rest of the repository is still checked, and it can be deleted on a machine that has a model key. See the feedback note in the README."
     },
     {
       "rule": "joggle/meaning-switched-by-flag",
-      "path": "extensions/package-scripts/exec.ts",
-      "reason": "RunOutcome.timedOut and Clamped.truncated add a fact rather than switch a meaning: stdout/stderr/code mean the same thing whether or not the timeout fired, and Clamped.text means the same thing whether or not it was cut. A union would add a discriminant that carries no data of its own. Declared rather than remodelled because the reader is not at risk of the wrong reading that the rule exists to prevent."
-    },
-    {
-      "rule": "joggle/meaning-switched-by-flag",
-      "path": "extensions/package-scripts/types.ts",
-      "reason": "Clamped.truncated is an added fact, not a discriminant. See the exception on extensions/package-scripts/exec.ts for the full reason; the declaration lives in types.ts and the branch lives in index.ts."
-    },
-    {
-      "rule": "joggle/meaning-switched-by-flag",
-      "path": "extensions/package-scripts/index.ts",
-      "reason": "describeOutcome branches on RunOutcome.timedOut and Clamped.truncated to add a line to a message. Both are added facts rather than discriminants: every other field of the value means the same thing either way. See the exception on extensions/package-scripts/exec.ts."
+      "path": "extensions/**",
+      "reason": "Judged, and unjudged here for the same reason as single-path. The candidate is any guard whose test names a field that some declaration types as boolean; RunOutcome.timedOut beside code/durationMs/stdout/stderr and Clamped.truncated beside text are two such candidates. The judge is given the flag's owner declaration and its field list, so it has what it needs to answer 'independent' -- a flag that selects behaviour while no value changes meaning. This exception exists because no key reached the provider, not because the rule cannot tell."
     },
     {
       "rule": "joggle/generic-carries-a-caller",
-      "path": "extensions/package-scripts/schema.ts",
-      "reason": "readJson passes 'utf8' to readFileSync, and the rule asks for it to be a parameter because two callers share the function. That is the right shape for a label, a route or a copy -- things one caller may want differently. It is the wrong shape for an encoding: a package.json or a package-scripts.json read as latin1 is a bug, not a caller's choice, and a parameter would invite it."
+      "path": "extensions/**",
+      "reason": "Judged, and unjudged here for the same reason as single-path. The candidate is any string literal of four characters or more, containing a lowercase letter, inside an exported unit that two or more files call; readJson is exported, two files call it, and it contains 'utf8'. The literal filter admits identifiers, encodings and format strings BY DESIGN, because the rule refuses to keep a vocabulary of caller-naming words -- its own docstring records that matching route names was the coupling that had to go. 'utf8' is therefore a true candidate, and only the judgement separates it from a caller's label."
     },
     {
       "rule": "joggle/unaccounted-drop",
       "path": "tests/support.ts",
-      "reason": "workspace treats a key that ends in a forward slash as a directory and every other key as a file. Nothing is dropped: the directory it makes is in the fixture it returns, and the caller wrote the key. The rule reads a branch that narrows a collection as a silent shortening of input, which is what it is in a parser and is not what it is in a fixture builder."
+      "reason": "Judged, unjudged here, AND a genuine gap worth reporting. The candidate is any exported function containing a continue; workspace skips a directory key and is exported, so it qualifies. Its caller is a test, and that is the gap: joggle already knows what a test file is -- policy.testFiles holds the pattern and workspace records unit.test -- and check.ts uses it to keep test declarations out of duplicate-implementation. This rule does not consult it. Skipping unit.test here would remove this finding in every repository, not only this one. See the feedback note in the README."
     }
   ],
   "architecture": {

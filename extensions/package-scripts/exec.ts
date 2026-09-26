@@ -2,9 +2,28 @@ import { spawn } from "node:child_process";
 import { closeSync, mkdirSync, openSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 import { now } from "./clock.ts";
+import type { PackageManager } from "./types.ts";
 
 /** Bytes held in memory per stream. The log file keeps the complete output. */
 const MAX_CAPTURE = 8 * 1024 * 1024;
+
+/**
+ * The command line for one script.
+ *
+ * Only npm needs the `--` separator, and only npm may have it. pnpm passes a
+ * separator through to the script, so `pnpm run show -- payroll` gives the
+ * script `["--", "payroll"]` rather than `["payroll"]`; npm strips it, and
+ * yarn and bun never needed it. Verified against pnpm 12.3.4, npm 11.19.1 and
+ * bun 1.3.14.
+ */
+export const scriptArguments = (
+	manager: PackageManager,
+	script: string,
+	extra: ReadonlyArray<string> | undefined,
+): ReadonlyArray<string> => {
+	if (extra === undefined || extra.length === 0) return ["run", script];
+	return manager === "npm" ? ["run", script, "--", ...extra] : ["run", script, ...extra];
+};
 
 /** One script run: what to start, where, and for how long. */
 export interface RunRequest {

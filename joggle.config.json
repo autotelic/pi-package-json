@@ -43,14 +43,16 @@
           "extensions/package-scripts/types.ts",
           "extensions/package-scripts/text.ts",
           "extensions/package-scripts/clock.ts",
-          "extensions/package-scripts/schema.ts"
+          "extensions/package-scripts/schema.ts",
+          "extensions/package-scripts/details.ts"
         ]
       },
       {
         "name": "domain",
         "include": [
           "extensions/package-scripts/config.ts",
-          "extensions/package-scripts/naming.ts"
+          "extensions/package-scripts/naming.ts",
+          "extensions/package-scripts/delegate.ts"
         ]
       },
       {

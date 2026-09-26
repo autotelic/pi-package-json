@@ -2,7 +2,18 @@ import { describe, expect, it } from "vitest";
 import { packageLabel, planTools, sanitize, uniqueLabels } from "../extensions/package-scripts/naming.ts";
 import type { DiscoveredPackage, ScriptEntry } from "../extensions/package-scripts/types.ts";
 
-const script = (name: string): ScriptEntry => ({ name, command: "true", reads: [] });
+interface ScriptOverrides {
+	readonly note?: string;
+	readonly background?: boolean;
+}
+
+const script = (name: string, overrides: ScriptOverrides = {}): ScriptEntry => ({
+	name,
+	command: "true",
+	reads: [],
+	note: overrides.note,
+	background: overrides.background ?? false,
+});
 
 const pkg = (
 	rel: string,
@@ -13,7 +24,7 @@ const pkg = (
 	rel,
 	packageName,
 	manager: "pnpm",
-	scripts: scripts.map(script),
+	scripts: scripts.map((name) => script(name)),
 });
 
 describe("sanitize", () => {
@@ -68,6 +79,15 @@ describe("uniqueLabels", () => {
 		expect(labels).toHaveLength(2);
 		expect(new Set(labels).size).toBe(2);
 	});
+
+	it("keeps root for the root package", () => {
+		const labels = uniqueLabels([
+			pkg(".", "app", ["build"]),
+			pkg("vendor/root", "root", ["build"]),
+		]);
+		expect(labels[0]).toBe("app");
+		expect(labels[1]).not.toBe("root");
+	});
 });
 
 describe("planTools", () => {
@@ -109,24 +129,63 @@ describe("planTools", () => {
 		expect(second).toEqual(["run_test"]);
 	});
 
+	/**
+	 * A root script whose name starts with a sibling package's label would make
+	 * the prefix mean two things: run_db_migrate is the root's db:migrate and
+	 * run_db_build is services/db's build, so "run_db_* is the database package"
+	 * is wrong for every root db:* script.
+	 */
+	it("qualifies the root when a nested label covers its short name", () => {
+		const packages = [
+			pkg(".", "app", ["db:migrate", "build"]),
+			pkg("services/db", "db", ["knex:migrate", "build"]),
+		];
+		const tools = planTools(packages, uniqueLabels(packages), new Set());
+		expect(tools.map((tool) => tool.name)).toEqual([
+			"run_root_db_migrate",
+			"run_build",
+			"run_db_knex_migrate",
+			"run_db_build",
+		]);
+	});
+
+	it("qualifies only the root scripts the label actually covers", () => {
+		const packages = [
+			pkg(".", "app", ["db:migrate", "lint"]),
+			pkg("services/db", "db", ["build"]),
+		];
+		const tools = planTools(packages, uniqueLabels(packages), new Set());
+		expect(tools.map((tool) => tool.name)).toEqual([
+			"run_root_db_migrate",
+			"run_lint",
+			"run_db_build",
+		]);
+	});
+
+	it("leaves the root short name alone when no label covers it", () => {
+		const packages = [pkg(".", "app", ["test:ui"]), pkg("services/ui", "ui", ["test"])];
+		const tools = planTools(packages, uniqueLabels(packages), new Set());
+		expect(tools.map((tool) => tool.name)).toEqual(["run_test_ui", "run_ui_test"]);
+	});
+
 	it("avoids a name an unrelated extension holds", () => {
 		const packages = [pkg(".", "app", ["build"])];
 		const tools = planTools(packages, uniqueLabels(packages), new Set(["run_build"]));
-		expect(tools.map((tool) => tool.name)).toEqual(["run_app_build"]);
+		expect(tools.map((tool) => tool.name)).toEqual(["run_root_build"]);
 	});
 
 	it("adds a counter as a last resort", () => {
 		const packages = [pkg(".", "app", ["build"])];
-		const taken = new Set(["run_build", "run_app_build"]);
+		const taken = new Set(["run_build", "run_root_build"]);
 		const tools = planTools(packages, uniqueLabels(packages), taken);
-		expect(tools.map((tool) => tool.name)).toEqual(["run_app_build_2"]);
+		expect(tools.map((tool) => tool.name)).toEqual(["run_root_build_2"]);
 	});
 
 	it("never repeats a name and stays stable across runs", () => {
 		const packages = [
-			pkg(".", "app", ["build", "test", "lint"]),
+			pkg(".", "app", ["build", "test", "lint", "db:migrate"]),
 			pkg("a", "a", ["build", "test"]),
-			pkg("b", "b", ["build", "test"]),
+			pkg("db", "db", ["build", "test", "migrate"]),
 			pkg("c", "c", ["format:check", "format:fix"]),
 		];
 		const labels = uniqueLabels(packages);

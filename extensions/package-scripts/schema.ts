@@ -33,6 +33,9 @@ export const Config = Type.Object({
 	),
 	maxDepth: Type.Optional(Type.Integer({ minimum: 1, maximum: 32 })),
 	timeoutSeconds: Type.Optional(Type.Integer({ minimum: 1, maximum: 3_600 })),
+	maxTools: Type.Optional(Type.Integer({ minimum: 1, maximum: 100_000 })),
+	notes: Type.Optional(Type.Record(Type.String(), Type.String())),
+	backgroundScripts: Type.Optional(Type.Array(Type.String())),
 });
 
 /** A decoded `package-scripts.json`. Every field is optional. */

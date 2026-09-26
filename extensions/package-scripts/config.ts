@@ -22,24 +22,48 @@ export interface ScriptsConfig {
 	readonly maxDepth: number;
 	/** Default seconds before a script is killed. */
 	readonly timeoutSeconds: number;
+	/**
+	 * The largest number of tools this extension will register.
+	 *
+	 * A `package.json` is input from a repository, and a repository can hold
+	 * more scripts than an agent has context. The cap bounds what one scan can
+	 * add to a prompt; a scan that reaches it says so rather than quietly
+	 * returning fewer tools than the repository has.
+	 */
+	readonly maxTools: number;
+	/**
+	 * Text to add to a script's tool description, by script-name pattern.
+	 *
+	 * This is how a repository says what a script DOES rather than what it runs.
+	 * A tool whose command is `knex migrate:latest` does not say which database,
+	 * and nothing in the command text separates a status check from a rollback.
+	 * The first matching pattern wins, in declaration order.
+	 */
+	readonly notes: Readonly<Record<string, string>>;
+	/**
+	 * Scripts that start detached unless the caller says otherwise.
+	 *
+	 * A watcher or a development server does not exit, so a synchronous call
+	 * waits for the whole timeout and then reports a kill. Name those scripts
+	 * here and the tool returns a pid and a log path at once.
+	 */
+	readonly backgroundScripts: ReadonlyArray<string>;
 }
 
 /**
- * Directory names that never hold a package this extension should expose.
+ * The one directory name the scan refuses on its own.
  *
- * The scan also refuses every dot-directory, so `.git`, `.next`, `.turbo`
- * and editor state cost nothing.
+ * `node_modules` is not a project convention, it is the package manager's own
+ * store: every dependency ships a `package.json`, none of them is this
+ * repository's code, and a tool that ran one of their scripts would be running
+ * someone else's code under this repository's name.
+ *
+ * Nothing else is built in. `dist`, `build`, `vendor` and `target` are
+ * conventions of particular languages and particular teams, and a name that is
+ * right in one repository is wrong in the next. A directory whose `package.json`
+ * should not become tools goes in `skipDirs`, where the repository says so.
  */
-export const BUILT_IN_SKIP_DIRS: ReadonlyArray<string> = [
-	"node_modules",
-	"dist",
-	"build",
-	"out",
-	"coverage",
-	"vendor",
-	"target",
-	"tmp",
-];
+export const BUILT_IN_SKIP_DIRS: ReadonlyArray<string> = ["node_modules"];
 
 /** The configuration a repository gets when it declares nothing. */
 export const DEFAULT_CONFIG: ScriptsConfig = {
@@ -49,6 +73,9 @@ export const DEFAULT_CONFIG: ScriptsConfig = {
 	managerOverride: undefined,
 	maxDepth: 8,
 	timeoutSeconds: 300,
+	maxTools: 500,
+	notes: {},
+	backgroundScripts: [],
 };
 
 /**
@@ -70,6 +97,9 @@ const readConfigFile = (path: string, fallback: ScriptsConfig): ScriptsConfig =>
 		managerOverride: declared.manager ?? fallback.managerOverride,
 		maxDepth: declared.maxDepth ?? fallback.maxDepth,
 		timeoutSeconds: declared.timeoutSeconds ?? fallback.timeoutSeconds,
+		maxTools: declared.maxTools ?? fallback.maxTools,
+		notes: declared.notes ?? fallback.notes,
+		backgroundScripts: declared.backgroundScripts ?? fallback.backgroundScripts,
 	};
 };
 

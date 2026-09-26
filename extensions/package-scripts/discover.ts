@@ -61,28 +61,67 @@ export const detectManager = (root: string, override: PackageManager | undefined
 	return managerFor(root, declared, "npm");
 };
 
+/** The note the configuration gives one script, if any pattern matches it. */
+const noteFor = (name: string, notes: Readonly<Record<string, string>>): string | undefined => {
+	for (const [pattern, note] of Object.entries(notes)) {
+		if (matchesPattern({ pattern, name })) return note;
+	}
+	return undefined;
+};
+
+/**
+ * A script name that would be read as an option rather than as a name.
+ *
+ * The command is built as `<manager> run <name>`, and a manager parses its own
+ * options before the script name, so a script called `--help` would print the
+ * manager's help instead of running. Refusing the name keeps the tool list
+ * unable to express that, rather than relying on every manager to be careful
+ * with the same input.
+ */
+const looksLikeAnOption = (name: string): boolean => name.startsWith("-");
+
 /**
  * The scripts of one manifest that survive the include and exclude patterns.
  *
  * The pattern lists are matched in the order the configuration declares them,
- * and an empty include list means "everything".
+ * and an empty include list means "everything". A note and a background
+ * default are resolved here as well, because they are properties of the
+ * repository's intent for the script rather than of the tool that runs it.
+ *
+ * A refused script is reported rather than dropped: a repository that has one
+ * should be able to see that this extension cannot offer it.
  */
 const scriptsFrom = (
 	declared: ManifestValue["scripts"],
 	config: ScriptsConfig,
+	problems: string[],
+	source: string,
 ): ReadonlyArray<ScriptEntry> => {
 	if (declared === undefined) return [];
 	const kept: ScriptEntry[] = [];
 	for (const [name, command] of Object.entries(declared)) {
+		if (looksLikeAnOption(name)) {
+			problems.push(
+				`${source} has a script named "${name}", which a package manager reads as an option`,
+			);
+			continue;
+		}
 		if (config.includeScripts.length > 0) {
 			const included = config.includeScripts.some((pattern) =>
 				matchesPattern({ pattern, name }),
 			);
 			if (!included) continue;
 		}
-		const excluded = config.excludeScripts.some((pattern) => matchesPattern({ pattern, name }));
-		if (excluded) continue;
-		kept.push({ name, command, reads: environmentNames(command) });
+		if (config.excludeScripts.some((pattern) => matchesPattern({ pattern, name }))) continue;
+		kept.push({
+			name,
+			command,
+			reads: environmentNames(command),
+			note: noteFor(name, config.notes),
+			background: config.backgroundScripts.some((pattern) =>
+				matchesPattern({ pattern, name }),
+			),
+		});
 	}
 	return kept;
 };
@@ -107,7 +146,7 @@ export const discover = (root: string, config: ScriptsConfig): Discovery => {
 		const here = relative(absoluteRoot, directory) || ".";
 		const manifest = readJson(join(directory, "package.json"), Manifest);
 		if (manifest !== undefined) {
-			const scripts = scriptsFrom(manifest.scripts, config);
+			const scripts = scriptsFrom(manifest.scripts, config, problems, join(here, "package.json"));
 			if (scripts.length > 0) {
 				packages.push({
 					dir: directory,

@@ -70,6 +70,18 @@ describe("loadConfig", () => {
 		expect(loaded.managerOverride).toBeUndefined();
 	});
 
+	it("reads notes and background scripts", () => {
+		const root = workspace({
+			"package-scripts.json": json({
+				notes: { "db:*": "connects to the database" },
+				backgroundScripts: ["dev"],
+			}),
+		});
+		const loaded = loadConfig(root);
+		expect(loaded.notes).toEqual({ "db:*": "connects to the database" });
+		expect(loaded.backgroundScripts).toEqual(["dev"]);
+	});
+
 	it("ignores a malformed file", () => {
 		const root = workspace({ "package-scripts.json": "{ not json" });
 		expect(loadConfig(root).maxDepth).toBe(8);
@@ -77,7 +89,24 @@ describe("loadConfig", () => {
 });
 
 describe("BUILT_IN_SKIP_DIRS", () => {
-	it("never exposes node_modules", () => {
-		expect(BUILT_IN_SKIP_DIRS).toContain("node_modules");
+	it("never exposes node_modules, and assumes nothing else", () => {
+		expect(BUILT_IN_SKIP_DIRS).toEqual(["node_modules"]);
+	});
+});
+
+describe("maxTools", () => {
+	it("defaults to a bounded surface", () => {
+		const root = workspace({ "package.json": "{}" });
+		expect(loadConfig(root).maxTools).toBe(500);
+	});
+
+	it("is read from the file", () => {
+		const root = workspace({ "package-scripts.json": json({ maxTools: 12 }) });
+		expect(loadConfig(root).maxTools).toBe(12);
+	});
+
+	it("ignores a value out of range", () => {
+		const root = workspace({ "package-scripts.json": json({ maxTools: 0 }) });
+		expect(loadConfig(root).maxTools).toBe(500);
 	});
 });

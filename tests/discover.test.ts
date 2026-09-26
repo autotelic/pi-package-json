@@ -56,6 +56,26 @@ describe("discover", () => {
 		expect(found.skipped).toContain(".cache");
 	});
 
+	it("enters a directory whose name is only a convention elsewhere", () => {
+		const root = workspace({
+			"package.json": json(manifest("root-app", { build: "tsc" })),
+			"dist/inner/package.json": json(manifest("inner", { build: "tsc" })),
+			"vendor/loose/package.json": json(manifest("loose", { build: "tsc" })),
+		});
+		const found = discover(root, config());
+		expect(found.packages.map((entry) => entry.rel)).toEqual([".", "dist/inner", "vendor/loose"]);
+	});
+
+	it("refuses a script name that a package manager reads as an option", () => {
+		const root = workspace({
+			"package.json": json(manifest("root-app", { build: "tsc", "--help": "node help.cjs" })),
+		});
+		const found = discover(root, config());
+		expect(found.packages[0]?.scripts.map((entry) => entry.name)).toEqual(["build"]);
+		expect(found.problems).toHaveLength(1);
+		expect(found.problems[0]).toContain("--help");
+	});
+
 	it("honours a configured skip directory", () => {
 		const root = workspace({
 			"package.json": json(manifest("root-app", { build: "tsc" })),
@@ -155,6 +175,45 @@ describe("discover", () => {
 			"odd/package.json": json({ name: "odd", scripts: { build: 12 } }),
 		});
 		expect(discover(root, config()).packages.map((entry) => entry.rel)).toEqual(["."]);
+	});
+
+	it("adds a configured note to the script its pattern matches", () => {
+		const root = workspace({
+			"package.json": json(
+				manifest("root-app", { "db:migrate": "knex migrate:latest", build: "tsc" }),
+			),
+		});
+		const found = discover(root, config({ notes: { "db:*": "connects to the database" } }));
+		const scripts = found.packages[0]?.scripts ?? [];
+		expect(scripts.find((entry) => entry.name === "db:migrate")?.note).toBe(
+			"connects to the database",
+		);
+		expect(scripts.find((entry) => entry.name === "build")?.note).toBeUndefined();
+	});
+
+	it("uses the first note whose pattern matches", () => {
+		const root = workspace({
+			"package.json": json(manifest("root-app", { "db:migrate": "knex migrate:latest" })),
+		});
+		const found = discover(
+			root,
+			config({ notes: { "db:*": "first", "*migrate": "second" } }),
+		);
+		expect(found.packages[0]?.scripts[0]?.note).toBe("first");
+	});
+
+	it("marks a script the configuration backgrounds", () => {
+		const root = workspace({
+			"package.json": json(
+				manifest("root-app", { dev: "vite", "test:watch": "vitest", build: "tsc" }),
+			),
+		});
+		const found = discover(root, config({ backgroundScripts: ["dev", "*:watch"] }));
+		expect(found.packages[0]?.scripts.map((entry) => [entry.name, entry.background])).toEqual([
+			["dev", true],
+			["test:watch", true],
+			["build", false],
+		]);
 	});
 
 	it("records the environment a script reads", () => {

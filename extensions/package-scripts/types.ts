@@ -2,7 +2,8 @@
  * The package managers this extension knows how to invoke.
  *
  * All four take the same `run <script>` form, so the manager name alone is
- * enough to build a command line.
+ * enough to build a command line. It is NOT enough on its own to pass extra
+ * arguments: npm needs a `--` separator before them and pnpm must not have one.
  */
 export type PackageManager = "pnpm" | "npm" | "yarn" | "bun";
 
@@ -18,6 +19,10 @@ export interface ScriptEntry {
 	 * believe a list of names is a list of values.
 	 */
 	readonly reads: ReadonlyArray<string>;
+	/** Text from the configuration, when a note pattern matched this script. */
+	readonly note: string | undefined;
+	/** Whether the configuration says this script starts detached by default. */
+	readonly background: boolean;
 }
 
 /** A `package.json` found under the launch directory. */

@@ -20,6 +20,9 @@ export const packageLabel = (pkg: DiscoveredPackage): string => {
 	return fromPath === "" ? "root" : fromPath;
 };
 
+/** The label the root package's tools fall back to when a short name is unsafe. */
+const ROOT_QUALIFIER = "root";
+
 /**
  * A label for every package, with no repeats.
  *
@@ -27,6 +30,9 @@ export const packageLabel = (pkg: DiscoveredPackage): string => {
  * or two directories that never set a `name`. A repeated label falls back to
  * the sanitized directory path, and a label that is still repeated gains a
  * counter. The caller gets one label per package, in the same order.
+ *
+ * `root` is reserved for the root package, so a nested package named `root`
+ * cannot make `run_root_build` ambiguous with the root's own qualified name.
  */
 export const uniqueLabels = (packages: ReadonlyArray<DiscoveredPackage>): ReadonlyArray<string> => {
 	const preferred = packages.map(packageLabel);
@@ -35,10 +41,11 @@ export const uniqueLabels = (packages: ReadonlyArray<DiscoveredPackage>): Readon
 
 	const used = new Set<string>();
 	return packages.map((pkg, index) => {
-		const first = preferred[index] ?? "root";
-		const fallback = sanitize(pkg.rel === "." ? "root" : pkg.rel);
+		const first = preferred[index] ?? ROOT_QUALIFIER;
+		const fallback = sanitize(pkg.rel === "." ? ROOT_QUALIFIER : pkg.rel);
 		let label = counts.get(first) === 1 ? first : fallback;
-		if (label === "") label = "root";
+		if (label === "" || (pkg.rel !== "." && label === ROOT_QUALIFIER)) label = fallback;
+		if (label === "") label = ROOT_QUALIFIER;
 		if (!used.has(label)) {
 			used.add(label);
 			return label;
@@ -49,6 +56,24 @@ export const uniqueLabels = (packages: ReadonlyArray<DiscoveredPackage>): Readon
 		used.add(unique);
 		return unique;
 	});
+};
+
+/**
+ * Whether a short root name would be read as belonging to a nested package.
+ *
+ * `db` is the label of services/db, so a root script named `db:migrate` would
+ * become `run_db_migrate` and sit beside `run_db_build` from services/db. An
+ * agent that learns "run_db_* is the database package" is then wrong for every
+ * root `db:*` script, and the roster holds a prefix that means two things.
+ *
+ * The root tool is qualified instead: `run_root_db_migrate`. The extension's
+ * rule is that a name means one thing, and a prefix is part of a name.
+ */
+const shadowedByLabel = (base: string, nestedLabels: ReadonlySet<string>): boolean => {
+	for (const label of nestedLabels) {
+		if (base === label || base.startsWith(`${label}_`)) return true;
+	}
+	return false;
 };
 
 /**
@@ -75,18 +100,29 @@ export const planTools = (
 ): ReadonlyArray<PlannedTool> => {
 	const used = new Set(taken);
 	const planned: PlannedTool[] = [];
+	const nestedLabels = new Set(
+		packages.flatMap((pkg, index) => (pkg.rel === "." ? [] : [labels[index] ?? ROOT_QUALIFIER])),
+	);
+	/** The preferred name, the qualified name, or the qualified name with a counter. */
+	const claim = (preferred: string, qualified: string): string => {
+		if (!used.has(preferred)) return preferred;
+		if (preferred !== qualified && !used.has(qualified)) return qualified;
+		let counter = 2;
+		while (used.has(`${qualified}_${counter}`)) counter += 1;
+		return `${qualified}_${counter}`;
+	};
+
 	packages.forEach((pkg, index) => {
-		const label = labels[index] ?? "root";
+		const label = labels[index] ?? ROOT_QUALIFIER;
+		const isRoot = pkg.rel === ".";
 		for (const script of pkg.scripts) {
 			const base = sanitize(script.name) || "script";
-			const qualified = `run_${label}_${base}`;
-			let name = qualified;
-			if (pkg.rel === "." && !used.has(`run_${base}`)) name = `run_${base}`;
-			if (used.has(name)) {
-				let counter = 2;
-				while (used.has(`${qualified}_${counter}`)) counter += 1;
-				name = `${qualified}_${counter}`;
-			}
+			const qualified = isRoot
+				? `run_${ROOT_QUALIFIER}_${base}`
+				: `run_${label}_${base}`;
+			const preferred =
+				isRoot && !shadowedByLabel(base, nestedLabels) ? `run_${base}` : qualified;
+			const name = claim(preferred, qualified);
 			used.add(name);
 			planned.push({ name, label: `${label}:${script.name}`, pkg, script });
 		}

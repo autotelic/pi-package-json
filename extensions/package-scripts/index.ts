@@ -15,15 +15,26 @@
  * agent then reaches them as `extensions.run_rest_test(...)` inside a
  * `fabric_exec` program, and the names-only roster in the prompt is the index.
  *
+ * What this extension does NOT do is decide which scripts are safe. It reports
+ * facts it can prove -- the command text, the package, the directory, the
+ * environment the script reads -- and never infers risk from a script's name,
+ * because a name that means "destructive" in one repository means nothing in
+ * the next. Those tools run repository code with the same authority as the
+ * shell. Policy belongs to Pi Fabric, which classifies captured tools and
+ * applies an approval policy to them.
+ *
  * Configuration, per repository, in `package-scripts.json` or
  * `.pi/package-scripts.json`:
  *
  *   {
  *     "skipDirs": ["fixtures"],
- *     "excludeScripts": ["watch", "dev*"],
+ *     "excludeScripts": ["prepare"],
+ *     "backgroundScripts": ["dev", "dev:*", "*:watch"],
+ *     "notes": { "db:*": "connects to the database named by the environment" },
  *     "manager": "pnpm",
  *     "maxDepth": 8,
- *     "timeoutSeconds": 300
+ *     "timeoutSeconds": 300,
+ *     "maxTools": 500
  *   }
  */
 import { createHash } from "node:crypto";
@@ -38,11 +49,13 @@ import type {
 } from "@earendil-works/pi-coding-agent";
 import { Type } from "typebox";
 import { loadConfig, matchesPattern, type ScriptsConfig } from "./config.ts";
+import { delegationTarget } from "./delegate.ts";
+import { detailsOf, scriptFailed, type ScriptDetails, type ScriptFacts } from "./details.ts";
 import { discover } from "./discover.ts";
-import { runBackground, runSync, type RunOutcome } from "./exec.ts";
+import { runBackground, runSync, scriptArguments, type RunOutcome } from "./exec.ts";
 import { planTools, uniqueLabels } from "./naming.ts";
 import { clamp, errorText, shorten } from "./text.ts";
-import type { Discovery, PackageManager, PlannedTool } from "./types.ts";
+import type { Discovery, PlannedTool } from "./types.ts";
 
 /** The largest timeout a caller may ask for, whatever the configuration says. */
 const MAX_TIMEOUT_SECONDS = 3_600;
@@ -53,75 +66,63 @@ const STDERR_LIMIT = 6_000;
 /** Rows the `/packages` report prints before it summarises the rest. */
 const REPORT_LIMIT = 60;
 
-const PARAMETERS = Type.Object({
-	args: Type.Optional(
-		Type.Array(Type.String(), {
-			description:
-				"Extra arguments for the script. They are appended after `--`, so the package manager forwards them to it.",
-		}),
-	),
-	env: Type.Optional(
-		Type.Record(Type.String(), Type.String(), {
-			description: "Extra environment variables for the script.",
-		}),
-	),
-	timeout: Type.Optional(
-		Type.Number({
-			description: `Seconds before the script is killed. Default 300, largest allowed ${MAX_TIMEOUT_SECONDS}.`,
-		}),
-	),
-	background: Type.Optional(
-		Type.Boolean({
-			description:
-				"Start the script detached and return at once with a pid and a log path. Use it for servers and watchers, which do not exit.",
-		}),
-	),
-});
+/**
+ * The parameter schema for one session.
+ *
+ * Built per scan rather than once at module load, because the timeout's default
+ * comes from the repository's configuration. A description that says 300 while
+ * the configuration says 900 is a description that lies to the model.
+ */
+const parametersOf = (config: ScriptsConfig) =>
+	Type.Object({
+		args: Type.Optional(
+			Type.Array(Type.String(), {
+				description:
+					"Extra arguments for the script. Only npm needs a '--' separator, and the extension adds it there.",
+			}),
+		),
+		env: Type.Optional(
+			Type.Record(Type.String(), Type.String(), {
+				description: "Extra environment variables for the script.",
+			}),
+		),
+		timeout: Type.Optional(
+			Type.Number({
+				description: `Seconds before the script is killed. Default ${config.timeoutSeconds}, largest allowed ${MAX_TIMEOUT_SECONDS}.`,
+			}),
+		),
+		background: Type.Optional(
+			Type.Boolean({
+				description:
+					"Start the script detached and return at once with a pid and a log path. Use it for servers and watchers, which do not exit.",
+			}),
+		),
+	});
 
-/** The facts every script tool reports about the run it performed. */
-interface ScriptFacts {
-	readonly tool: string;
-	readonly package: string;
-	readonly scriptName: string;
-	readonly packageManager: PackageManager;
-	readonly cwd: string;
-	readonly log: string;
+type ScriptParameters = ReturnType<typeof parametersOf>;
+
+/** What one scan of the launch directory produced. */
+interface SessionState {
+	readonly root: string;
+	readonly discovery: Discovery;
+	readonly tools: ReadonlyArray<PlannedTool>;
+	readonly config: ScriptsConfig;
+	/** Scripts the tool cap left out. Reported, never dropped quietly. */
+	readonly dropped: number;
 }
-
-/** The details of a script that ran to completion. */
-interface ScriptRunDetails extends ScriptFacts {
-	readonly exitCode: number;
-	readonly durationMs: number;
-}
-
-/** The details of a script that was started detached. */
-interface ScriptStartDetails extends ScriptFacts {
-	readonly pid: number;
-}
-
-/** The structured half of a script tool result. */
-type ScriptDetails = ScriptRunDetails | ScriptStartDetails;
 
 /**
- * A script that failed, or that could not be started.
+ * A tool result.
  *
- * Pi turns a throw from `execute` into a failed tool result whose content is
- * the message, so the rendered report travels in the message. The class exists
- * so that the failure has a name a host can match on, rather than only prose.
+ * A failed script is still an answered tool call: the result carries the exit
+ * code, the duration and the log path, and a `tool_result` handler marks the
+ * call as an error. Throwing instead would keep the message and throw the facts
+ * away, and the facts are what a caller reads to decide what to do next.
  */
-class ScriptFailure extends Error {
-	override readonly name = "ScriptFailure";
-}
-
-const ok = (text: string, details: ScriptDetails): AgentToolResult<ScriptDetails> => ({
+const answered = (text: string, details: ScriptDetails): AgentToolResult<ScriptDetails> => ({
 	content: [{ type: "text", text }],
 	details,
 });
-
-/** Report a failure. Pi marks a tool result as an error only when `execute` throws. */
-const fail = (text: string): never => {
-	throw new ScriptFailure(text);
-};
 
 /** One log directory per repository, so two checkouts never overwrite each other. */
 const logDirectory = (root: string): string =>
@@ -130,26 +131,30 @@ const logDirectory = (root: string): string =>
 const placeOf = (tool: PlannedTool): string =>
 	tool.pkg.rel === "." ? "the repository root" : tool.pkg.rel;
 
-/** The model-facing description of one script tool. */
+/**
+ * The model-facing description of one script tool.
+ *
+ * The configured note comes before the command, because it is the part that
+ * says what the script DOES. Nothing in `knex migrate:latest` separates a
+ * status check from a rollback, and no amount of command text will say which
+ * database it reaches.
+ */
 const describeTool = (tool: PlannedTool): string => {
 	const lines = [
 		`Run the "${tool.script.name}" script of ${placeOf(tool)} with ${tool.pkg.manager}, from that directory.`,
-		`Command: ${shorten(tool.script.command, 240)}`,
 	];
+	if (tool.script.note !== undefined) lines.push(`Note: ${tool.script.note}`);
+	lines.push(`Command: ${shorten(tool.script.command, 240)}`);
 	if (tool.script.reads.length > 0) {
 		lines.push(
 			`The script reads ${tool.script.reads.join(", ")} out of the environment. Give a value in \`env\`.`,
 		);
 	}
+	if (tool.script.background) {
+		lines.push("This script does not exit. It starts detached unless you pass background: false.");
+	}
 	return lines.join("\n");
 };
-
-/** The command line for one script, with any extra arguments forwarded to it. */
-const scriptArguments = (
-	script: string,
-	extra: ReadonlyArray<string> | undefined,
-): ReadonlyArray<string> =>
-	extra === undefined || extra.length === 0 ? ["run", script] : ["run", script, "--", ...extra];
 
 /** The timeout for one call, in milliseconds, bounded by the configuration. */
 const timeoutMilliseconds = (requested: number | undefined, config: ScriptsConfig): number => {
@@ -193,20 +198,22 @@ const describeOutcome = (
 /**
  * Build the tool for one script.
  *
- * Every tool takes the same parameters, so one schema serves them all. The
- * script name, the package directory and the package manager are closed over,
- * because they are facts about the workspace rather than arguments.
+ * Every tool takes the same parameters, so one schema serves them all within a
+ * session. The script name, the package directory and the package manager are
+ * closed over, because they are facts about the workspace rather than
+ * arguments.
  */
 const buildTool = (
 	tool: PlannedTool,
 	config: ScriptsConfig,
 	logs: string,
-): ToolDefinition<typeof PARAMETERS, ScriptDetails> => ({
+	parameters: ScriptParameters,
+): ToolDefinition<ScriptParameters, ScriptDetails> => ({
 	name: tool.name,
 	label: tool.label,
 	description: describeTool(tool),
 	promptSnippet: `Run the "${tool.script.name}" script in ${placeOf(tool)}`,
-	parameters: PARAMETERS,
+	parameters,
 	async execute(_toolCallId, params, signal): Promise<AgentToolResult<ScriptDetails>> {
 		const logFile = join(logs, `${tool.name}.log`);
 		const facts: ScriptFacts = {
@@ -219,7 +226,7 @@ const buildTool = (
 		};
 		const request = {
 			command: tool.pkg.manager,
-			args: scriptArguments(tool.script.name, params.args),
+			args: scriptArguments(tool.pkg.manager, tool.script.name, params.args),
 			cwd: tool.pkg.dir,
 			environment: params.env,
 			timeoutMs: timeoutMilliseconds(params.timeout, config),
@@ -227,16 +234,18 @@ const buildTool = (
 			logFile,
 		};
 
-		if (params.background === true) {
+		if (params.background ?? tool.script.background) {
 			try {
 				const started = await runBackground(request);
-				return ok(
+				return answered(
 					`Started \`${tool.pkg.manager} run ${tool.script.name}\` as pid ${started.pid}. Read the output at ${started.logFile}.`,
-					{ ...facts, pid: started.pid },
+					{ ...facts, outcome: "started", pid: started.pid },
 				);
 			} catch (error) {
-				return fail(
-					`Could not start "${tool.script.name}" with ${tool.pkg.manager}: ${errorText(error)}`,
+				const reason = errorText(error);
+				return answered(
+					`Could not start "${tool.script.name}" with ${tool.pkg.manager}: ${reason}`,
+					{ ...facts, outcome: "unavailable", reason },
 				);
 			}
 		}
@@ -245,34 +254,34 @@ const buildTool = (
 		try {
 			outcome = await runSync(request);
 		} catch (error) {
-			return fail(
-				`Could not run "${tool.script.name}" with ${tool.pkg.manager}: ${errorText(error)}`,
+			const reason = errorText(error);
+			return answered(
+				`Could not run "${tool.script.name}" with ${tool.pkg.manager}: ${reason}`,
+				{ ...facts, outcome: "unavailable", reason },
 			);
 		}
 
-		const text = describeOutcome(tool, outcome, request.timeoutMs, logFile);
-		if (outcome.code !== 0) return fail(text);
-		return ok(text, { ...facts, exitCode: outcome.code, durationMs: outcome.durationMs });
+		return answered(describeOutcome(tool, outcome, request.timeoutMs, logFile), {
+			...facts,
+			outcome: "exited",
+			exitCode: outcome.code,
+			durationMs: outcome.durationMs,
+		});
 	},
 });
 
-/** What one scan of the launch directory produced. */
-interface SessionState {
-	readonly root: string;
-	readonly discovery: Discovery;
-	readonly tools: ReadonlyArray<PlannedTool>;
-	readonly config: ScriptsConfig;
-}
-
 const numberOf = (count: number, noun: string): string => `${count} ${noun}${count === 1 ? "" : "s"}`;
 
-const summaryOf = (state: SessionState): string =>
-	[
+const summaryOf = (state: SessionState): string => {
+	const parts = [
 		state.root,
 		numberOf(state.discovery.packages.length, "package"),
 		numberOf(state.tools.length, "script"),
 		state.discovery.manager,
-	].join(" - ");
+	];
+	if (state.dropped > 0) parts.push(`${numberOf(state.dropped, "script")} past maxTools`);
+	return parts.join(" - ");
+};
 
 const reportOf = (state: SessionState, wanted: string): string => {
 	const lines = [summaryOf(state)];
@@ -295,7 +304,9 @@ const reportOf = (state: SessionState, wanted: string): string => {
 	}
 	lines.push("");
 	for (const tool of matched.slice(0, REPORT_LIMIT)) {
-		lines.push(`  ${tool.name} -> ${tool.pkg.rel} - ${tool.script.name}`);
+		const target = delegationTarget(tool, state.tools);
+		const alias = target === undefined ? "" : `  (delegates to ${target})`;
+		lines.push(`  ${tool.name} -> ${tool.pkg.rel} - ${tool.script.name}${alias}`);
 	}
 	if (matched.length > REPORT_LIMIT) {
 		lines.push(`  ...and ${matched.length - REPORT_LIMIT} more`);
@@ -329,11 +340,19 @@ export default function packageScripts(pi: ExtensionAPI): void {
 				.map((tool) => tool.name)
 				.filter((name) => !registered.has(name)),
 		);
-		const tools = planTools(discovery.packages, uniqueLabels(discovery.packages), taken);
+		const planned = planTools(discovery.packages, uniqueLabels(discovery.packages), taken);
+		const tools = planned.slice(0, config.maxTools);
 		const logs = logDirectory(discovery.root);
-		for (const tool of tools) pi.registerTool(buildTool(tool, config, logs));
+		const parameters = parametersOf(config);
+		for (const tool of tools) pi.registerTool(buildTool(tool, config, logs, parameters));
 		registered = new Set(tools.map((tool) => tool.name));
-		state = { root: discovery.root, discovery, tools, config };
+		state = {
+			root: discovery.root,
+			discovery,
+			tools,
+			config,
+			dropped: planned.length - tools.length,
+		};
 		return state;
 	};
 
@@ -343,10 +362,30 @@ export default function packageScripts(pi: ExtensionAPI): void {
 		if (loaded.discovery.problems.length > 0) {
 			ctx.ui.notify(`package.json scan: ${loaded.discovery.problems[0] ?? ""}`, "warning");
 		}
+		if (loaded.dropped > 0) {
+			ctx.ui.notify(
+				`package.json scan: ${numberOf(loaded.dropped, "script")} left out by maxTools=${loaded.config.maxTools}`,
+				"warning",
+			);
+		}
 		if (loaded.tools.length === 0) {
 			ctx.ui.notify(`package.json scan: no scripts found under ${loaded.root}`, "warning");
 		}
 	};
+
+	/**
+	 * Mark a script tool call that failed.
+	 *
+	 * Pi decides a tool result is an error from the result itself, and only a
+	 * throw sets that flag. This handler reads the same structured details the
+	 * tool published, so a non-zero exit reaches the model as a failed call
+	 * WITHOUT losing the exit code, the duration and the log path.
+	 */
+	pi.on("tool_result", (event) => {
+		const details = detailsOf(event);
+		if (details === undefined || !scriptFailed(details)) return;
+		return { isError: true };
+	});
 
 	pi.on("session_start", (_event, ctx) => {
 		announce(ctx, load(ctx.cwd));

@@ -2,7 +2,7 @@
 
 A pi extension that turns every `package.json` script under the launch
 directory into a pi tool. The entry is
-`extensions/package-scripts/index.ts`; everything it needs is in the modules
+`extensions/index.ts`; everything it needs is in the modules
 beside it. The README is written for a user of the extension; this file is
 written for an agent changing it.
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { runBackground, runSync, scriptArguments, type RunRequest } from "../extensions/package-scripts/exec.ts";
-import { durationText, shorten } from "../extensions/package-scripts/text.ts";
+import { runBackground, runSync, scriptArguments, type RunRequest } from "../extensions/exec.ts";
+import { durationText, shorten } from "../extensions/text.ts";
 import { statSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";

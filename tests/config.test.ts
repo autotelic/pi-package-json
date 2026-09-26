@@ -3,7 +3,7 @@ import {
 	loadConfig,
 	matchesPattern,
 	BUILT_IN_SKIP_DIRS,
-} from "../extensions/package-scripts/config.ts";
+} from "../extensions/config.ts";
 import { json, workspace } from "./support.ts";
 
 /** Ask the pattern question the way a caller does. */

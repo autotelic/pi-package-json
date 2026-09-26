@@ -7,7 +7,7 @@ import {
 	isIgnored,
 	readIgnoreFile,
 	type IgnoreRule,
-} from "../extensions/package-scripts/ignore.ts";
+} from "../extensions/ignore.ts";
 import { workspace } from "./support.ts";
 
 /** The rules one ignore text declares at the repository root. */

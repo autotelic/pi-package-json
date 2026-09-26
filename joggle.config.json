@@ -19,36 +19,36 @@
       {
         "name": "kernel",
         "include": [
-          "extensions/package-scripts/types.ts",
-          "extensions/package-scripts/text.ts",
-          "extensions/package-scripts/clock.ts",
-          "extensions/package-scripts/schema.ts",
-          "extensions/package-scripts/details.ts",
-          "extensions/package-scripts/revision.ts"
+          "extensions/types.ts",
+          "extensions/text.ts",
+          "extensions/clock.ts",
+          "extensions/schema.ts",
+          "extensions/details.ts",
+          "extensions/revision.ts"
         ]
       },
       {
         "name": "domain",
         "include": [
-          "extensions/package-scripts/config.ts",
-          "extensions/package-scripts/naming.ts",
-          "extensions/package-scripts/ignore.ts",
-          "extensions/package-scripts/delegate.ts"
+          "extensions/config.ts",
+          "extensions/naming.ts",
+          "extensions/ignore.ts",
+          "extensions/delegate.ts"
         ]
       },
       {
         "name": "engine",
         "include": [
-          "extensions/package-scripts/discover.ts",
-          "extensions/package-scripts/exec.ts",
-          "extensions/package-scripts/tool.ts",
-          "extensions/package-scripts/report.ts"
+          "extensions/discover.ts",
+          "extensions/exec.ts",
+          "extensions/tool.ts",
+          "extensions/report.ts"
         ]
       },
       {
         "name": "entry",
         "include": [
-          "extensions/package-scripts/index.ts"
+          "extensions/index.ts"
         ]
       }
     ]

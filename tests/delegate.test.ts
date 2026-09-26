@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { delegationIn, delegationTarget } from "../extensions/package-scripts/delegate.ts";
-import type { PlannedTool, ScriptEntry } from "../extensions/package-scripts/types.ts";
+import { delegationIn, delegationTarget } from "../extensions/delegate.ts";
+import type { PlannedTool, ScriptEntry } from "../extensions/types.ts";
 
 const tool = (
 	name: string,

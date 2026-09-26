@@ -18,7 +18,7 @@
     "url": "git+https://github.com/autotelic/pi-package-json.git"
   },
   "pi": {
-    "extensions": ["./extensions/package-scripts/index.ts"]
+    "extensions": ["./extensions/index.ts"]
   },
   "files": ["extensions", "docs", "README.md", "LICENSE"],
   "scripts": {

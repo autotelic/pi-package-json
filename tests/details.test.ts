@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { ToolResultEvent } from "@earendil-works/pi-coding-agent";
-import { detailsOf, scriptFailed, type ScriptDetails } from "../extensions/package-scripts/details.ts";
+import { detailsOf, scriptFailed, type ScriptDetails } from "../extensions/details.ts";
 
 const facts = {
 	tool: "run_lint",

@@ -82,7 +82,7 @@ export default {
 			 * pure function of its arguments. The rule is satisfied by the shape of
 			 * the repository, not by this file being exempt from it.
 			 */
-			files: ["extensions/package-scripts/clock.ts"],
+			files: ["extensions/clock.ts"],
 			rules: { "plumb/no-nondeterministic-core": "off" },
 		},
 		{
@@ -96,8 +96,8 @@ export default {
 			 * to satisfy a keyword list is the tool writing the documentation.
 			 */
 			files: [
-				"extensions/package-scripts/index.ts",
-				"extensions/package-scripts/tool.ts",
+				"extensions/index.ts",
+				"extensions/tool.ts",
 			],
 			rules: { "plumb/no-sql-string-interpolation": "off" },
 		},

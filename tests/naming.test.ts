@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { packageLabel, planTools, sanitize, uniqueLabels } from "../extensions/package-scripts/naming.ts";
-import type { DiscoveredPackage, ScriptEntry } from "../extensions/package-scripts/types.ts";
+import { packageLabel, planTools, sanitize, uniqueLabels } from "../extensions/naming.ts";
+import type { DiscoveredPackage, ScriptEntry } from "../extensions/types.ts";
 
 interface ScriptOverrides {
 	readonly note?: string;

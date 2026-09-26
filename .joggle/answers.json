@@ -3962,6 +3962,3266 @@
         "wrong_behavior": 0.01
       },
       "confidence": 0.98
+    },
+    "8ad500992f42384b": {
+      "kind": "Classify",
+      "label": "library_core",
+      "probabilities": {
+        "domain_core": 0.01,
+        "transport_edge": 0.01,
+        "rendering_edge": 0,
+        "infrastructure": 0.03,
+        "library_core": 0.8,
+        "utilities": 0.07,
+        "not_applicable": 0.08
+      },
+      "confidence": 0.78
+    },
+    "f153ea98930ad796": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 1,
+        "stale_reference": 0,
+        "wrong_contract": 0,
+        "wrong_behavior": 0
+      },
+      "confidence": 1
+    },
+    "c995798efd5602de": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.97,
+        "stale_reference": 0,
+        "wrong_contract": 0.01,
+        "wrong_behavior": 0.02
+      },
+      "confidence": 0.95
+    },
+    "8d71f634d43a5ec1": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.97,
+        "stale_reference": 0.01,
+        "wrong_contract": 0.01,
+        "wrong_behavior": 0.01
+      },
+      "confidence": 0.96
+    },
+    "5d2f942a7e3f9bad": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.96,
+        "stale_reference": 0.01,
+        "wrong_contract": 0.03,
+        "wrong_behavior": 0
+      },
+      "confidence": 0.95
+    },
+    "9fe4025330030b54": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.99,
+        "stale_reference": 0,
+        "wrong_contract": 0,
+        "wrong_behavior": 0.01
+      },
+      "confidence": 0.98
+    },
+    "22b0f6716f300a00": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.99,
+        "stale_reference": 0,
+        "wrong_contract": 0,
+        "wrong_behavior": 0.01
+      },
+      "confidence": 0.99
+    },
+    "7478bc8490730aeb": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.98,
+        "stale_reference": 0,
+        "wrong_contract": 0.01,
+        "wrong_behavior": 0.01
+      },
+      "confidence": 0.98
+    },
+    "54130614550b640b": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.98,
+        "stale_reference": 0,
+        "wrong_contract": 0,
+        "wrong_behavior": 0.02
+      },
+      "confidence": 0.97
+    },
+    "7a276aacc8c1b0b9": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.98,
+        "stale_reference": 0,
+        "wrong_contract": 0.01,
+        "wrong_behavior": 0.01
+      },
+      "confidence": 0.97
+    },
+    "5f6a1885bf2bea7f": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.86,
+        "stale_reference": 0,
+        "wrong_contract": 0.01,
+        "wrong_behavior": 0.13
+      },
+      "confidence": 0.81
+    },
+    "ceb3d21ca5b7806e": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.96,
+        "stale_reference": 0,
+        "wrong_contract": 0.01,
+        "wrong_behavior": 0.03
+      },
+      "confidence": 0.95
+    },
+    "9a55d7d7285404e2": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.99,
+        "stale_reference": 0,
+        "wrong_contract": 0.01,
+        "wrong_behavior": 0
+      },
+      "confidence": 0.98
+    },
+    "150c04b84482ab10": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.88,
+        "stale_reference": 0,
+        "wrong_contract": 0.04,
+        "wrong_behavior": 0.08
+      },
+      "confidence": 0.84
+    },
+    "118788fa87e5525a": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.71,
+        "stale_reference": 0,
+        "wrong_contract": 0.04,
+        "wrong_behavior": 0.25
+      },
+      "confidence": 0.62
+    },
+    "13fdab653b80f076": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.95,
+        "stale_reference": 0,
+        "wrong_contract": 0.01,
+        "wrong_behavior": 0.04
+      },
+      "confidence": 0.93
+    },
+    "49572387ddb47f05": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.99,
+        "stale_reference": 0,
+        "wrong_contract": 0,
+        "wrong_behavior": 0.01
+      },
+      "confidence": 0.99
+    },
+    "0112f1d353b8b8e5": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.98,
+        "stale_reference": 0,
+        "wrong_contract": 0,
+        "wrong_behavior": 0.02
+      },
+      "confidence": 0.97
+    },
+    "112ee8c5d7a18324": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.93,
+        "stale_reference": 0,
+        "wrong_contract": 0.01,
+        "wrong_behavior": 0.06
+      },
+      "confidence": 0.91
+    },
+    "bc1868cfb73c33ef": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 1,
+        "stale_reference": 0,
+        "wrong_contract": 0,
+        "wrong_behavior": 0
+      },
+      "confidence": 1
+    },
+    "c6eef4338631f4f6": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.97,
+        "stale_reference": 0,
+        "wrong_contract": 0.01,
+        "wrong_behavior": 0.02
+      },
+      "confidence": 0.95
+    },
+    "940646fb6536d457": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.97,
+        "stale_reference": 0.01,
+        "wrong_contract": 0.01,
+        "wrong_behavior": 0.01
+      },
+      "confidence": 0.96
+    },
+    "bf5705409afd9c66": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.96,
+        "stale_reference": 0.01,
+        "wrong_contract": 0.03,
+        "wrong_behavior": 0
+      },
+      "confidence": 0.95
+    },
+    "a0b4ea8bc0701fb7": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.99,
+        "stale_reference": 0,
+        "wrong_contract": 0,
+        "wrong_behavior": 0.01
+      },
+      "confidence": 0.98
+    },
+    "ed2754181ba40b4a": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.99,
+        "stale_reference": 0,
+        "wrong_contract": 0,
+        "wrong_behavior": 0.01
+      },
+      "confidence": 0.99
+    },
+    "b96790ad275d9a0b": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.98,
+        "stale_reference": 0,
+        "wrong_contract": 0.01,
+        "wrong_behavior": 0.01
+      },
+      "confidence": 0.98
+    },
+    "75d756281c82b732": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.98,
+        "stale_reference": 0,
+        "wrong_contract": 0,
+        "wrong_behavior": 0.02
+      },
+      "confidence": 0.97
+    },
+    "60a84d4e09970443": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.98,
+        "stale_reference": 0,
+        "wrong_contract": 0.01,
+        "wrong_behavior": 0.01
+      },
+      "confidence": 0.97
+    },
+    "98bd74b441c2f26e": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.86,
+        "stale_reference": 0,
+        "wrong_contract": 0.01,
+        "wrong_behavior": 0.13
+      },
+      "confidence": 0.81
+    },
+    "8f79bd450f22de1c": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.96,
+        "stale_reference": 0,
+        "wrong_contract": 0.01,
+        "wrong_behavior": 0.03
+      },
+      "confidence": 0.95
+    },
+    "2a036e00fc16ad1c": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.99,
+        "stale_reference": 0,
+        "wrong_contract": 0.01,
+        "wrong_behavior": 0
+      },
+      "confidence": 0.98
+    },
+    "1bc6fc3ca7bf3bbc": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.88,
+        "stale_reference": 0,
+        "wrong_contract": 0.04,
+        "wrong_behavior": 0.08
+      },
+      "confidence": 0.84
+    },
+    "b5991492420d6378": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.71,
+        "stale_reference": 0,
+        "wrong_contract": 0.04,
+        "wrong_behavior": 0.25
+      },
+      "confidence": 0.62
+    },
+    "3a111b07b0880c8b": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.95,
+        "stale_reference": 0,
+        "wrong_contract": 0.01,
+        "wrong_behavior": 0.04
+      },
+      "confidence": 0.93
+    },
+    "a8a3c928621f3cb1": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.99,
+        "stale_reference": 0,
+        "wrong_contract": 0,
+        "wrong_behavior": 0.01
+      },
+      "confidence": 0.99
+    },
+    "1f2415342da2d919": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.98,
+        "stale_reference": 0,
+        "wrong_contract": 0,
+        "wrong_behavior": 0.02
+      },
+      "confidence": 0.97
+    },
+    "5a3479982a72ea25": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.93,
+        "stale_reference": 0,
+        "wrong_contract": 0.01,
+        "wrong_behavior": 0.06
+      },
+      "confidence": 0.91
+    },
+    "ab5eb6e982811ea7": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.98,
+        "stale_reference": 0,
+        "wrong_contract": 0,
+        "wrong_behavior": 0.02
+      },
+      "confidence": 0.96
+    },
+    "a5e5e080b96f628f": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.91,
+        "stale_reference": 0,
+        "wrong_contract": 0.06,
+        "wrong_behavior": 0.03
+      },
+      "confidence": 0.88
+    },
+    "f78e77b7517c77c3": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.96,
+        "stale_reference": 0,
+        "wrong_contract": 0.03,
+        "wrong_behavior": 0.01
+      },
+      "confidence": 0.94
+    },
+    "d4110760dd429960": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.87,
+        "stale_reference": 0.01,
+        "wrong_contract": 0.04,
+        "wrong_behavior": 0.08
+      },
+      "confidence": 0.83
+    },
+    "939dca4fea4a19f5": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.91,
+        "stale_reference": 0,
+        "wrong_contract": 0.03,
+        "wrong_behavior": 0.06
+      },
+      "confidence": 0.88
+    },
+    "133f32bfb938866e": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.92,
+        "stale_reference": 0,
+        "wrong_contract": 0.04,
+        "wrong_behavior": 0.04
+      },
+      "confidence": 0.89
+    },
+    "ad58976ba4bc253e": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.9299999999999999,
+        "stale_reference": 0.03,
+        "wrong_contract": 0.02,
+        "wrong_behavior": 0.02
+      },
+      "confidence": 0.91
+    },
+    "243000eec819be0b": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.98,
+        "stale_reference": 0.01,
+        "wrong_contract": 0.01,
+        "wrong_behavior": 0
+      },
+      "confidence": 0.98
+    },
+    "c2c350eb3f5d9a07": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.97,
+        "stale_reference": 0,
+        "wrong_contract": 0.01,
+        "wrong_behavior": 0.02
+      },
+      "confidence": 0.95
+    },
+    "a742221706599350": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.89,
+        "stale_reference": 0,
+        "wrong_contract": 0.04,
+        "wrong_behavior": 0.07
+      },
+      "confidence": 0.85
+    },
+    "cb33cf3d7565f5ed": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 1,
+        "stale_reference": 0,
+        "wrong_contract": 0,
+        "wrong_behavior": 0
+      },
+      "confidence": 0.99
+    },
+    "4bf2821ecc950036": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 1,
+        "stale_reference": 0,
+        "wrong_contract": 0,
+        "wrong_behavior": 0
+      },
+      "confidence": 0.99
+    },
+    "ad91952075a0ffc7": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.99,
+        "stale_reference": 0,
+        "wrong_contract": 0,
+        "wrong_behavior": 0.01
+      },
+      "confidence": 0.98
+    },
+    "8417f4e01d121730": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.85,
+        "stale_reference": 0,
+        "wrong_contract": 0.04,
+        "wrong_behavior": 0.11
+      },
+      "confidence": 0.79
+    },
+    "8a9fcf7ad0707fa1": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.95,
+        "stale_reference": 0.03,
+        "wrong_contract": 0.01,
+        "wrong_behavior": 0.01
+      },
+      "confidence": 0.94
+    },
+    "ebd606c90ea002af": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 1,
+        "stale_reference": 0,
+        "wrong_contract": 0,
+        "wrong_behavior": 0
+      },
+      "confidence": 0.99
+    },
+    "d023f00076ca2dcd": {
+      "kind": "Classify",
+      "label": "orchestration",
+      "probabilities": {
+        "domain_logic": 0.13,
+        "request_validation": 0.01,
+        "input_adaptation": 0.03,
+        "mechanical": 0,
+        "transport_concern": 0.03,
+        "rendering": 0,
+        "orchestration": 0.44,
+        "infrastructure": 0.36,
+        "not_applicable": 0
+      },
+      "confidence": 0.35
+    },
+    "a9481e8a1c23309c": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.79,
+        "route_or_handler": 0.06,
+        "component_or_feature": 0.05,
+        "not_applicable": 0.1
+      },
+      "confidence": 0.71
+    },
+    "47172d5d129268fc": {
+      "kind": "Classify",
+      "label": "domain_logic",
+      "probabilities": {
+        "domain_logic": 0.48,
+        "request_validation": 0.1,
+        "input_adaptation": 0.11,
+        "mechanical": 0.08,
+        "transport_concern": 0.03,
+        "rendering": 0,
+        "orchestration": 0,
+        "infrastructure": 0,
+        "not_applicable": 0.2
+      },
+      "confidence": 0.41
+    },
+    "a4a2d7ab7ca09d0f": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.83,
+        "route_or_handler": 0.04,
+        "component_or_feature": 0.04,
+        "not_applicable": 0.09
+      },
+      "confidence": 0.78
+    },
+    "0c910552d56aa4eb": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.98,
+        "stale_reference": 0,
+        "wrong_contract": 0,
+        "wrong_behavior": 0.02
+      },
+      "confidence": 0.96
+    },
+    "81f93a39e1de29b2": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.91,
+        "stale_reference": 0,
+        "wrong_contract": 0.06,
+        "wrong_behavior": 0.03
+      },
+      "confidence": 0.88
+    },
+    "815c703065610bed": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.96,
+        "stale_reference": 0,
+        "wrong_contract": 0.03,
+        "wrong_behavior": 0.01
+      },
+      "confidence": 0.94
+    },
+    "3a309ce9edf44fa0": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.87,
+        "stale_reference": 0.01,
+        "wrong_contract": 0.04,
+        "wrong_behavior": 0.08
+      },
+      "confidence": 0.83
+    },
+    "8f946c534820ee52": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.91,
+        "stale_reference": 0,
+        "wrong_contract": 0.03,
+        "wrong_behavior": 0.06
+      },
+      "confidence": 0.88
+    },
+    "9538fcea19e3413a": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.92,
+        "stale_reference": 0,
+        "wrong_contract": 0.04,
+        "wrong_behavior": 0.04
+      },
+      "confidence": 0.89
+    },
+    "cf87eb8913f44853": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.9299999999999999,
+        "stale_reference": 0.03,
+        "wrong_contract": 0.02,
+        "wrong_behavior": 0.02
+      },
+      "confidence": 0.91
+    },
+    "0702ddd3f2a43b3f": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.98,
+        "stale_reference": 0.01,
+        "wrong_contract": 0.01,
+        "wrong_behavior": 0
+      },
+      "confidence": 0.98
+    },
+    "672034bb3d7d1231": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.97,
+        "stale_reference": 0,
+        "wrong_contract": 0.01,
+        "wrong_behavior": 0.02
+      },
+      "confidence": 0.95
+    },
+    "a0cddc4749d70858": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.89,
+        "stale_reference": 0,
+        "wrong_contract": 0.04,
+        "wrong_behavior": 0.07
+      },
+      "confidence": 0.85
+    },
+    "5e79ea4c3c6766c7": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 1,
+        "stale_reference": 0,
+        "wrong_contract": 0,
+        "wrong_behavior": 0
+      },
+      "confidence": 0.99
+    },
+    "592214f968dd9ef2": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 1,
+        "stale_reference": 0,
+        "wrong_contract": 0,
+        "wrong_behavior": 0
+      },
+      "confidence": 0.99
+    },
+    "c89c18232b6df994": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.99,
+        "stale_reference": 0,
+        "wrong_contract": 0,
+        "wrong_behavior": 0.01
+      },
+      "confidence": 0.98
+    },
+    "19c01ae09b313679": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.85,
+        "stale_reference": 0,
+        "wrong_contract": 0.04,
+        "wrong_behavior": 0.11
+      },
+      "confidence": 0.79
+    },
+    "d4e23a1568863b79": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 0.95,
+        "stale_reference": 0.03,
+        "wrong_contract": 0.01,
+        "wrong_behavior": 0.01
+      },
+      "confidence": 0.94
+    },
+    "5f595fd512218a68": {
+      "kind": "Classify",
+      "label": "no_issue",
+      "probabilities": {
+        "no_issue": 1,
+        "stale_reference": 0,
+        "wrong_contract": 0,
+        "wrong_behavior": 0
+      },
+      "confidence": 0.99
+    },
+    "1f12df2a45d88d23": {
+      "kind": "Classify",
+      "label": "orchestration",
+      "probabilities": {
+        "domain_logic": 0.13,
+        "request_validation": 0.01,
+        "input_adaptation": 0.03,
+        "mechanical": 0,
+        "transport_concern": 0.03,
+        "rendering": 0,
+        "orchestration": 0.44,
+        "infrastructure": 0.36,
+        "not_applicable": 0
+      },
+      "confidence": 0.35
+    },
+    "9c39fdce1f6735a8": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.79,
+        "route_or_handler": 0.06,
+        "component_or_feature": 0.05,
+        "not_applicable": 0.1
+      },
+      "confidence": 0.71
+    },
+    "6a95a04b838948e6": {
+      "kind": "Classify",
+      "label": "domain_logic",
+      "probabilities": {
+        "domain_logic": 0.48,
+        "request_validation": 0.1,
+        "input_adaptation": 0.11,
+        "mechanical": 0.08,
+        "transport_concern": 0.03,
+        "rendering": 0,
+        "orchestration": 0,
+        "infrastructure": 0,
+        "not_applicable": 0.2
+      },
+      "confidence": 0.41
+    },
+    "b1e4a136e75392b2": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.83,
+        "route_or_handler": 0.04,
+        "component_or_feature": 0.04,
+        "not_applicable": 0.09
+      },
+      "confidence": 0.78
+    },
+    "a334358e2c8cf946": {
+      "kind": "Classify",
+      "label": "domain_logic",
+      "probabilities": {
+        "domain_logic": 0.71,
+        "request_validation": 0,
+        "input_adaptation": 0,
+        "mechanical": 0.2,
+        "transport_concern": 0,
+        "rendering": 0,
+        "orchestration": 0.08,
+        "infrastructure": 0,
+        "not_applicable": 0.01
+      },
+      "confidence": 0.66
+    },
+    "7f9d0967fb003372": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.69,
+        "route_or_handler": 0.13,
+        "component_or_feature": 0.11,
+        "not_applicable": 0.07
+      },
+      "confidence": 0.6
+    },
+    "00d2d6e3079619fd": {
+      "kind": "Classify",
+      "label": "domain_logic",
+      "probabilities": {
+        "domain_logic": 0.96,
+        "request_validation": 0,
+        "input_adaptation": 0,
+        "mechanical": 0,
+        "transport_concern": 0.01,
+        "rendering": 0,
+        "orchestration": 0,
+        "infrastructure": 0,
+        "not_applicable": 0.03
+      },
+      "confidence": 0.95
+    },
+    "f436687e3d7db2de": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.66,
+        "route_or_handler": 0.06,
+        "component_or_feature": 0.22,
+        "not_applicable": 0.06
+      },
+      "confidence": 0.54
+    },
+    "ab94980a72a06179": {
+      "kind": "Classify",
+      "label": "domain_logic",
+      "probabilities": {
+        "domain_logic": 0.44,
+        "request_validation": 0,
+        "input_adaptation": 0.06,
+        "mechanical": 0.01,
+        "transport_concern": 0.01,
+        "rendering": 0,
+        "orchestration": 0.41,
+        "infrastructure": 0.06,
+        "not_applicable": 0.01
+      },
+      "confidence": 0.37
+    },
+    "026255860316bd2e": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.7,
+        "route_or_handler": 0.05,
+        "component_or_feature": 0.15,
+        "not_applicable": 0.1
+      },
+      "confidence": 0.59
+    },
+    "57bb501c1db4c387": {
+      "kind": "Classify",
+      "label": "domain_logic",
+      "probabilities": {
+        "domain_logic": 0.37,
+        "request_validation": 0,
+        "input_adaptation": 0,
+        "mechanical": 0,
+        "transport_concern": 0,
+        "rendering": 0,
+        "orchestration": 0.3,
+        "infrastructure": 0.33,
+        "not_applicable": 0
+      },
+      "confidence": 0.28
+    },
+    "5f9c7114c8667a54": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.85,
+        "route_or_handler": 0.03,
+        "component_or_feature": 0.07,
+        "not_applicable": 0.05
+      },
+      "confidence": 0.81
+    },
+    "05cf257cbe268413": {
+      "kind": "Classify",
+      "label": "input_adaptation",
+      "probabilities": {
+        "domain_logic": 0.16,
+        "request_validation": 0,
+        "input_adaptation": 0.67,
+        "mechanical": 0.01,
+        "transport_concern": 0.13,
+        "rendering": 0.01,
+        "orchestration": 0,
+        "infrastructure": 0.01,
+        "not_applicable": 0.01
+      },
+      "confidence": 0.62
+    },
+    "c718bafdd66cacc9": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.68,
+        "route_or_handler": 0.18,
+        "component_or_feature": 0.08,
+        "not_applicable": 0.06
+      },
+      "confidence": 0.57
+    },
+    "d0473f348ea34a24": {
+      "kind": "Classify",
+      "label": "infrastructure",
+      "probabilities": {
+        "domain_logic": 0.02,
+        "request_validation": 0,
+        "input_adaptation": 0,
+        "mechanical": 0,
+        "transport_concern": 0.01,
+        "rendering": 0,
+        "orchestration": 0.23,
+        "infrastructure": 0.74,
+        "not_applicable": 0
+      },
+      "confidence": 0.7
+    },
+    "32ff5869fa26f411": {
+      "kind": "Classify",
+      "label": "route_or_handler",
+      "probabilities": {
+        "already_there": 0.32,
+        "route_or_handler": 0.46,
+        "component_or_feature": 0.08,
+        "not_applicable": 0.14
+      },
+      "confidence": 0.28
+    },
+    "174a035b0f4676b3": {
+      "kind": "Classify",
+      "label": "infrastructure",
+      "probabilities": {
+        "domain_logic": 0.03,
+        "request_validation": 0,
+        "input_adaptation": 0,
+        "mechanical": 0,
+        "transport_concern": 0.01,
+        "rendering": 0,
+        "orchestration": 0.21,
+        "infrastructure": 0.75,
+        "not_applicable": 0
+      },
+      "confidence": 0.71
+    },
+    "542a37d6a1ef24d0": {
+      "kind": "Classify",
+      "label": "route_or_handler",
+      "probabilities": {
+        "already_there": 0.39,
+        "route_or_handler": 0.44,
+        "component_or_feature": 0.06,
+        "not_applicable": 0.11
+      },
+      "confidence": 0.26
+    },
+    "6a29b7768344f9cd": {
+      "kind": "Classify",
+      "label": "infrastructure",
+      "probabilities": {
+        "domain_logic": 0.14,
+        "request_validation": 0,
+        "input_adaptation": 0.23,
+        "mechanical": 0,
+        "transport_concern": 0.08,
+        "rendering": 0,
+        "orchestration": 0.12,
+        "infrastructure": 0.42,
+        "not_applicable": 0.01
+      },
+      "confidence": 0.34
+    },
+    "8742b82c52154ffe": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.79,
+        "route_or_handler": 0.04,
+        "component_or_feature": 0.07,
+        "not_applicable": 0.1
+      },
+      "confidence": 0.71
+    },
+    "4457c92f0bdd926a": {
+      "kind": "Classify",
+      "label": "domain_logic",
+      "probabilities": {
+        "domain_logic": 0.93,
+        "request_validation": 0,
+        "input_adaptation": 0,
+        "mechanical": 0.02,
+        "transport_concern": 0,
+        "rendering": 0,
+        "orchestration": 0.01,
+        "infrastructure": 0,
+        "not_applicable": 0.04
+      },
+      "confidence": 0.91
+    },
+    "41a1feca5cded562": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.88,
+        "route_or_handler": 0.01,
+        "component_or_feature": 0.04,
+        "not_applicable": 0.07
+      },
+      "confidence": 0.83
+    },
+    "7529d67c6a5ae27a": {
+      "kind": "Classify",
+      "label": "orchestration",
+      "probabilities": {
+        "domain_logic": 0.3,
+        "request_validation": 0,
+        "input_adaptation": 0.01,
+        "mechanical": 0.01,
+        "transport_concern": 0,
+        "rendering": 0,
+        "orchestration": 0.43,
+        "infrastructure": 0.24,
+        "not_applicable": 0.01
+      },
+      "confidence": 0.36
+    },
+    "fd8f45ca2f68dcfc": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.79,
+        "route_or_handler": 0.02,
+        "component_or_feature": 0.1,
+        "not_applicable": 0.09
+      },
+      "confidence": 0.72
+    },
+    "3e80c60def16e30f": {
+      "kind": "Classify",
+      "label": "orchestration",
+      "probabilities": {
+        "domain_logic": 0.03,
+        "request_validation": 0,
+        "input_adaptation": 0,
+        "mechanical": 0,
+        "transport_concern": 0,
+        "rendering": 0,
+        "orchestration": 0.95,
+        "infrastructure": 0.02,
+        "not_applicable": 0
+      },
+      "confidence": 0.94
+    },
+    "163718b2a613468a": {
+      "kind": "Classify",
+      "label": "route_or_handler",
+      "probabilities": {
+        "already_there": 0.25,
+        "route_or_handler": 0.47,
+        "component_or_feature": 0.19,
+        "not_applicable": 0.09
+      },
+      "confidence": 0.3
+    },
+    "800a7279d8d4ad14": {
+      "kind": "Classify",
+      "label": "input_adaptation",
+      "probabilities": {
+        "domain_logic": 0.14,
+        "request_validation": 0.01,
+        "input_adaptation": 0.59,
+        "mechanical": 0.23,
+        "transport_concern": 0,
+        "rendering": 0,
+        "orchestration": 0,
+        "infrastructure": 0,
+        "not_applicable": 0.03
+      },
+      "confidence": 0.53
+    },
+    "a2583f25972dff8d": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.76,
+        "route_or_handler": 0.02,
+        "component_or_feature": 0.08,
+        "not_applicable": 0.14
+      },
+      "confidence": 0.68
+    },
+    "0f81459c953773d5": {
+      "kind": "Classify",
+      "label": "mechanical",
+      "probabilities": {
+        "domain_logic": 0.26,
+        "request_validation": 0,
+        "input_adaptation": 0.03,
+        "mechanical": 0.7,
+        "transport_concern": 0,
+        "rendering": 0,
+        "orchestration": 0,
+        "infrastructure": 0,
+        "not_applicable": 0.01
+      },
+      "confidence": 0.66
+    },
+    "b9570ed24df43c96": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.83,
+        "route_or_handler": 0.01,
+        "component_or_feature": 0.06,
+        "not_applicable": 0.1
+      },
+      "confidence": 0.77
+    },
+    "210bc7332281ee2d": {
+      "kind": "Classify",
+      "label": "domain_logic",
+      "probabilities": {
+        "domain_logic": 0.7,
+        "request_validation": 0,
+        "input_adaptation": 0.04,
+        "mechanical": 0.25,
+        "transport_concern": 0,
+        "rendering": 0,
+        "orchestration": 0.01,
+        "infrastructure": 0,
+        "not_applicable": 0
+      },
+      "confidence": 0.66
+    },
+    "6dc7f5170df02fe4": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.76,
+        "route_or_handler": 0.02,
+        "component_or_feature": 0.12,
+        "not_applicable": 0.1
+      },
+      "confidence": 0.68
+    },
+    "82806f4c6b065922": {
+      "kind": "Classify",
+      "label": "rendering",
+      "probabilities": {
+        "domain_logic": 0.12,
+        "request_validation": 0,
+        "input_adaptation": 0.03,
+        "mechanical": 0.02,
+        "transport_concern": 0.02,
+        "rendering": 0.78,
+        "orchestration": 0.02,
+        "infrastructure": 0,
+        "not_applicable": 0.01
+      },
+      "confidence": 0.74
+    },
+    "a429099fa070eebe": {
+      "kind": "Classify",
+      "label": "component_or_feature",
+      "probabilities": {
+        "already_there": 0.3,
+        "route_or_handler": 0.14,
+        "component_or_feature": 0.43,
+        "not_applicable": 0.13
+      },
+      "confidence": 0.23
+    },
+    "c9adffdf80d06a43": {
+      "kind": "Classify",
+      "label": "domain_logic",
+      "probabilities": {
+        "domain_logic": 0.71,
+        "request_validation": 0,
+        "input_adaptation": 0,
+        "mechanical": 0.2,
+        "transport_concern": 0,
+        "rendering": 0,
+        "orchestration": 0.08,
+        "infrastructure": 0,
+        "not_applicable": 0.01
+      },
+      "confidence": 0.66
+    },
+    "5e947a88ea23bdc0": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.69,
+        "route_or_handler": 0.13,
+        "component_or_feature": 0.11,
+        "not_applicable": 0.07
+      },
+      "confidence": 0.6
+    },
+    "d005c945d532fb4b": {
+      "kind": "Classify",
+      "label": "domain_logic",
+      "probabilities": {
+        "domain_logic": 0.96,
+        "request_validation": 0,
+        "input_adaptation": 0,
+        "mechanical": 0,
+        "transport_concern": 0.01,
+        "rendering": 0,
+        "orchestration": 0,
+        "infrastructure": 0,
+        "not_applicable": 0.03
+      },
+      "confidence": 0.95
+    },
+    "43650b4be91c3b1d": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.66,
+        "route_or_handler": 0.06,
+        "component_or_feature": 0.22,
+        "not_applicable": 0.06
+      },
+      "confidence": 0.54
+    },
+    "7025e0095d9f2e72": {
+      "kind": "Classify",
+      "label": "domain_logic",
+      "probabilities": {
+        "domain_logic": 0.44,
+        "request_validation": 0,
+        "input_adaptation": 0.06,
+        "mechanical": 0.01,
+        "transport_concern": 0.01,
+        "rendering": 0,
+        "orchestration": 0.41,
+        "infrastructure": 0.06,
+        "not_applicable": 0.01
+      },
+      "confidence": 0.37
+    },
+    "0824f0a5bc735aa2": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.7,
+        "route_or_handler": 0.05,
+        "component_or_feature": 0.15,
+        "not_applicable": 0.1
+      },
+      "confidence": 0.59
+    },
+    "19155168e726afde": {
+      "kind": "Classify",
+      "label": "domain_logic",
+      "probabilities": {
+        "domain_logic": 0.37,
+        "request_validation": 0,
+        "input_adaptation": 0,
+        "mechanical": 0,
+        "transport_concern": 0,
+        "rendering": 0,
+        "orchestration": 0.3,
+        "infrastructure": 0.33,
+        "not_applicable": 0
+      },
+      "confidence": 0.28
+    },
+    "c7d84b0c04e3c3e5": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.85,
+        "route_or_handler": 0.03,
+        "component_or_feature": 0.07,
+        "not_applicable": 0.05
+      },
+      "confidence": 0.81
+    },
+    "3ce1c9f18f650db3": {
+      "kind": "Classify",
+      "label": "input_adaptation",
+      "probabilities": {
+        "domain_logic": 0.16,
+        "request_validation": 0,
+        "input_adaptation": 0.67,
+        "mechanical": 0.01,
+        "transport_concern": 0.13,
+        "rendering": 0.01,
+        "orchestration": 0,
+        "infrastructure": 0.01,
+        "not_applicable": 0.01
+      },
+      "confidence": 0.62
+    },
+    "084e88389af0727d": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.68,
+        "route_or_handler": 0.18,
+        "component_or_feature": 0.08,
+        "not_applicable": 0.06
+      },
+      "confidence": 0.57
+    },
+    "6d9500adda8a17e5": {
+      "kind": "Classify",
+      "label": "infrastructure",
+      "probabilities": {
+        "domain_logic": 0.02,
+        "request_validation": 0,
+        "input_adaptation": 0,
+        "mechanical": 0,
+        "transport_concern": 0.01,
+        "rendering": 0,
+        "orchestration": 0.23,
+        "infrastructure": 0.74,
+        "not_applicable": 0
+      },
+      "confidence": 0.7
+    },
+    "343f4fe118360f52": {
+      "kind": "Classify",
+      "label": "route_or_handler",
+      "probabilities": {
+        "already_there": 0.32,
+        "route_or_handler": 0.46,
+        "component_or_feature": 0.08,
+        "not_applicable": 0.14
+      },
+      "confidence": 0.28
+    },
+    "4412ee30a2afc057": {
+      "kind": "Classify",
+      "label": "infrastructure",
+      "probabilities": {
+        "domain_logic": 0.03,
+        "request_validation": 0,
+        "input_adaptation": 0,
+        "mechanical": 0,
+        "transport_concern": 0.01,
+        "rendering": 0,
+        "orchestration": 0.21,
+        "infrastructure": 0.75,
+        "not_applicable": 0
+      },
+      "confidence": 0.71
+    },
+    "e87ec2b1870495f3": {
+      "kind": "Classify",
+      "label": "route_or_handler",
+      "probabilities": {
+        "already_there": 0.39,
+        "route_or_handler": 0.44,
+        "component_or_feature": 0.06,
+        "not_applicable": 0.11
+      },
+      "confidence": 0.26
+    },
+    "082d55fc253fd2ee": {
+      "kind": "Classify",
+      "label": "infrastructure",
+      "probabilities": {
+        "domain_logic": 0.14,
+        "request_validation": 0,
+        "input_adaptation": 0.23,
+        "mechanical": 0,
+        "transport_concern": 0.08,
+        "rendering": 0,
+        "orchestration": 0.12,
+        "infrastructure": 0.42,
+        "not_applicable": 0.01
+      },
+      "confidence": 0.34
+    },
+    "683360e054bdb554": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.79,
+        "route_or_handler": 0.04,
+        "component_or_feature": 0.07,
+        "not_applicable": 0.1
+      },
+      "confidence": 0.71
+    },
+    "a0fc1a2e112be345": {
+      "kind": "Classify",
+      "label": "domain_logic",
+      "probabilities": {
+        "domain_logic": 0.93,
+        "request_validation": 0,
+        "input_adaptation": 0,
+        "mechanical": 0.02,
+        "transport_concern": 0,
+        "rendering": 0,
+        "orchestration": 0.01,
+        "infrastructure": 0,
+        "not_applicable": 0.04
+      },
+      "confidence": 0.91
+    },
+    "9e38643ba96ee78b": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.88,
+        "route_or_handler": 0.01,
+        "component_or_feature": 0.04,
+        "not_applicable": 0.07
+      },
+      "confidence": 0.83
+    },
+    "fea317300413f82f": {
+      "kind": "Classify",
+      "label": "orchestration",
+      "probabilities": {
+        "domain_logic": 0.3,
+        "request_validation": 0,
+        "input_adaptation": 0.01,
+        "mechanical": 0.01,
+        "transport_concern": 0,
+        "rendering": 0,
+        "orchestration": 0.43,
+        "infrastructure": 0.24,
+        "not_applicable": 0.01
+      },
+      "confidence": 0.36
+    },
+    "79fa722bb3636579": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.79,
+        "route_or_handler": 0.02,
+        "component_or_feature": 0.1,
+        "not_applicable": 0.09
+      },
+      "confidence": 0.72
+    },
+    "32ec7b191116d43c": {
+      "kind": "Classify",
+      "label": "orchestration",
+      "probabilities": {
+        "domain_logic": 0.03,
+        "request_validation": 0,
+        "input_adaptation": 0,
+        "mechanical": 0,
+        "transport_concern": 0,
+        "rendering": 0,
+        "orchestration": 0.95,
+        "infrastructure": 0.02,
+        "not_applicable": 0
+      },
+      "confidence": 0.94
+    },
+    "462cb1053c53d12d": {
+      "kind": "Classify",
+      "label": "route_or_handler",
+      "probabilities": {
+        "already_there": 0.25,
+        "route_or_handler": 0.47,
+        "component_or_feature": 0.19,
+        "not_applicable": 0.09
+      },
+      "confidence": 0.3
+    },
+    "c76476fa793b66e0": {
+      "kind": "Classify",
+      "label": "input_adaptation",
+      "probabilities": {
+        "domain_logic": 0.14,
+        "request_validation": 0.01,
+        "input_adaptation": 0.59,
+        "mechanical": 0.23,
+        "transport_concern": 0,
+        "rendering": 0,
+        "orchestration": 0,
+        "infrastructure": 0,
+        "not_applicable": 0.03
+      },
+      "confidence": 0.53
+    },
+    "05d7e99a985a1b71": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.76,
+        "route_or_handler": 0.02,
+        "component_or_feature": 0.08,
+        "not_applicable": 0.14
+      },
+      "confidence": 0.68
+    },
+    "e1ea69dc307bd388": {
+      "kind": "Classify",
+      "label": "mechanical",
+      "probabilities": {
+        "domain_logic": 0.26,
+        "request_validation": 0,
+        "input_adaptation": 0.03,
+        "mechanical": 0.7,
+        "transport_concern": 0,
+        "rendering": 0,
+        "orchestration": 0,
+        "infrastructure": 0,
+        "not_applicable": 0.01
+      },
+      "confidence": 0.66
+    },
+    "edc09f4d4ad6c3a2": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.83,
+        "route_or_handler": 0.01,
+        "component_or_feature": 0.06,
+        "not_applicable": 0.1
+      },
+      "confidence": 0.77
+    },
+    "6c31129926897313": {
+      "kind": "Classify",
+      "label": "domain_logic",
+      "probabilities": {
+        "domain_logic": 0.7,
+        "request_validation": 0,
+        "input_adaptation": 0.04,
+        "mechanical": 0.25,
+        "transport_concern": 0,
+        "rendering": 0,
+        "orchestration": 0.01,
+        "infrastructure": 0,
+        "not_applicable": 0
+      },
+      "confidence": 0.66
+    },
+    "b287ce866e953a47": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.76,
+        "route_or_handler": 0.02,
+        "component_or_feature": 0.12,
+        "not_applicable": 0.1
+      },
+      "confidence": 0.68
+    },
+    "dd3db72e78de91f1": {
+      "kind": "Classify",
+      "label": "rendering",
+      "probabilities": {
+        "domain_logic": 0.12,
+        "request_validation": 0,
+        "input_adaptation": 0.03,
+        "mechanical": 0.02,
+        "transport_concern": 0.02,
+        "rendering": 0.78,
+        "orchestration": 0.02,
+        "infrastructure": 0,
+        "not_applicable": 0.01
+      },
+      "confidence": 0.74
+    },
+    "5688947c04e959b7": {
+      "kind": "Classify",
+      "label": "component_or_feature",
+      "probabilities": {
+        "already_there": 0.3,
+        "route_or_handler": 0.14,
+        "component_or_feature": 0.43,
+        "not_applicable": 0.13
+      },
+      "confidence": 0.23
+    },
+    "48fed3e0ad7457f0": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.02,
+        "legitimate_local": 0.87,
+        "not_a_derivation": 0.11
+      },
+      "confidence": 0.8
+    },
+    "a5ac99891309b011": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.06,
+        "legitimate_local": 0.63,
+        "not_a_derivation": 0.31
+      },
+      "confidence": 0.44
+    },
+    "190ef83950303bc6": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.03,
+        "legitimate_local": 0.77,
+        "not_a_derivation": 0.2
+      },
+      "confidence": 0.66
+    },
+    "cdc8beef28c8d945": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.08,
+        "legitimate_local": 0.59,
+        "not_a_derivation": 0.33
+      },
+      "confidence": 0.39
+    },
+    "76088dad82ed3149": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.02,
+        "legitimate_local": 0.74,
+        "not_a_derivation": 0.24
+      },
+      "confidence": 0.62
+    },
+    "69a8b3765859b145": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0,
+        "legitimate_local": 0.84,
+        "not_a_derivation": 0.16
+      },
+      "confidence": 0.76
+    },
+    "8faa9322544cc740": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.16,
+        "legitimate_local": 0.81,
+        "not_a_derivation": 0.03
+      },
+      "confidence": 0.71
+    },
+    "ac319042d556dc3b": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.04,
+        "legitimate_local": 0.94,
+        "not_a_derivation": 0.02
+      },
+      "confidence": 0.91
+    },
+    "ffe92cc7ee2c765b": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0,
+        "legitimate_local": 0.92,
+        "not_a_derivation": 0.08
+      },
+      "confidence": 0.87
+    },
+    "43eac56c833e5bf7": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0,
+        "legitimate_local": 0.74,
+        "not_a_derivation": 0.26
+      },
+      "confidence": 0.61
+    },
+    "2cdaeab176a23eca": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0,
+        "legitimate_local": 0.8,
+        "not_a_derivation": 0.2
+      },
+      "confidence": 0.7
+    },
+    "657dc5780b536b8f": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.15,
+        "legitimate_local": 0.82,
+        "not_a_derivation": 0.03
+      },
+      "confidence": 0.73
+    },
+    "1c40ff7f0ebba7fb": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0,
+        "legitimate_local": 0.57,
+        "not_a_derivation": 0.43
+      },
+      "confidence": 0.35
+    },
+    "184d07a50cdc4cd9": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.35,
+        "legitimate_local": 0.59,
+        "not_a_derivation": 0.06
+      },
+      "confidence": 0.39
+    },
+    "665b15f7228a8ba6": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0,
+        "legitimate_local": 0.92,
+        "not_a_derivation": 0.08
+      },
+      "confidence": 0.87
+    },
+    "2b56a2698a261353": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0,
+        "legitimate_local": 0.96,
+        "not_a_derivation": 0.04
+      },
+      "confidence": 0.94
+    },
+    "74bb6f2b255d649b": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0,
+        "legitimate_local": 0.9,
+        "not_a_derivation": 0.1
+      },
+      "confidence": 0.84
+    },
+    "a282228211496933": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.01,
+        "legitimate_local": 0.95,
+        "not_a_derivation": 0.04
+      },
+      "confidence": 0.93
+    },
+    "d6ee0e6c9f14393a": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0,
+        "legitimate_local": 0.85,
+        "not_a_derivation": 0.15
+      },
+      "confidence": 0.78
+    },
+    "94da18ffb0fb6e78": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0,
+        "legitimate_local": 0.86,
+        "not_a_derivation": 0.14
+      },
+      "confidence": 0.78
+    },
+    "f3173a918ee87fc0": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.01,
+        "legitimate_local": 0.7,
+        "not_a_derivation": 0.29
+      },
+      "confidence": 0.56
+    },
+    "7a178650ef3c2804": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0,
+        "legitimate_local": 0.6,
+        "not_a_derivation": 0.4
+      },
+      "confidence": 0.39
+    },
+    "ec06de8d32eee01f": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.02,
+        "legitimate_local": 0.93,
+        "not_a_derivation": 0.05
+      },
+      "confidence": 0.9
+    },
+    "505bda1795ec326d": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.02,
+        "legitimate_local": 0.93,
+        "not_a_derivation": 0.05
+      },
+      "confidence": 0.89
+    },
+    "4fe0ee56c80f381d": {
+      "kind": "Classify",
+      "label": "internal_only",
+      "probabilities": {
+        "unaccounted": 0.02,
+        "accounted_elsewhere": 0.01,
+        "internal_only": 0.97
+      },
+      "confidence": 0.96
+    },
+    "afc81058a45b1410": {
+      "kind": "Classify",
+      "label": "internal_only",
+      "probabilities": {
+        "unaccounted": 0.01,
+        "accounted_elsewhere": 0.01,
+        "internal_only": 0.98
+      },
+      "confidence": 0.97
+    },
+    "941846397e5fd1e3": {
+      "kind": "Classify",
+      "label": "shared_vocabulary",
+      "probabilities": {
+        "names_a_caller": 0,
+        "general": 0.15,
+        "shared_vocabulary": 0.85
+      },
+      "confidence": 0.77
+    },
+    "5feaabedef9a1547": {
+      "kind": "Classify",
+      "label": "independent",
+      "probabilities": {
+        "meaning_switched": 0,
+        "independent": 0.87,
+        "appropriate": 0.13
+      },
+      "confidence": 0.81
+    },
+    "e792d4af5d7c2230": {
+      "kind": "Classify",
+      "label": "independent",
+      "probabilities": {
+        "meaning_switched": 0,
+        "independent": 0.84,
+        "appropriate": 0.16
+      },
+      "confidence": 0.76
+    },
+    "cf798aaf0660ec97": {
+      "kind": "Classify",
+      "label": "independent",
+      "probabilities": {
+        "meaning_switched": 0,
+        "independent": 0.9,
+        "appropriate": 0.1
+      },
+      "confidence": 0.85
+    },
+    "d0687bb435ecdcfa": {
+      "kind": "Classify",
+      "label": "independent",
+      "probabilities": {
+        "meaning_switched": 0,
+        "independent": 0.83,
+        "appropriate": 0.17
+      },
+      "confidence": 0.74
+    },
+    "9ed62a918b2a98c7": {
+      "kind": "Classify",
+      "label": "independent",
+      "probabilities": {
+        "meaning_switched": 0,
+        "independent": 0.92,
+        "appropriate": 0.08
+      },
+      "confidence": 0.88
+    },
+    "42008d641e34d186": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.02,
+        "legitimate_local": 0.87,
+        "not_a_derivation": 0.11
+      },
+      "confidence": 0.8
+    },
+    "4df5b769a2f56a52": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.06,
+        "legitimate_local": 0.63,
+        "not_a_derivation": 0.31
+      },
+      "confidence": 0.44
+    },
+    "d02fda6e8fe6fb47": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.03,
+        "legitimate_local": 0.77,
+        "not_a_derivation": 0.2
+      },
+      "confidence": 0.66
+    },
+    "2caef4f56ad8292d": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.08,
+        "legitimate_local": 0.59,
+        "not_a_derivation": 0.33
+      },
+      "confidence": 0.39
+    },
+    "083237a8b2344737": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.02,
+        "legitimate_local": 0.74,
+        "not_a_derivation": 0.24
+      },
+      "confidence": 0.62
+    },
+    "b8e77a75b4372bd9": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0,
+        "legitimate_local": 0.84,
+        "not_a_derivation": 0.16
+      },
+      "confidence": 0.76
+    },
+    "835dfeea49bb3909": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.16,
+        "legitimate_local": 0.81,
+        "not_a_derivation": 0.03
+      },
+      "confidence": 0.71
+    },
+    "fbc9703e6771f443": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.04,
+        "legitimate_local": 0.94,
+        "not_a_derivation": 0.02
+      },
+      "confidence": 0.91
+    },
+    "1182ccac94a1752b": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0,
+        "legitimate_local": 0.92,
+        "not_a_derivation": 0.08
+      },
+      "confidence": 0.87
+    },
+    "d94186aefa3ffcec": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0,
+        "legitimate_local": 0.74,
+        "not_a_derivation": 0.26
+      },
+      "confidence": 0.61
+    },
+    "0f89a386b9c5538a": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0,
+        "legitimate_local": 0.8,
+        "not_a_derivation": 0.2
+      },
+      "confidence": 0.7
+    },
+    "d336b0dd00a71acb": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.15,
+        "legitimate_local": 0.82,
+        "not_a_derivation": 0.03
+      },
+      "confidence": 0.73
+    },
+    "0b02392d1548db03": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0,
+        "legitimate_local": 0.57,
+        "not_a_derivation": 0.43
+      },
+      "confidence": 0.35
+    },
+    "3c5c99a2873c26d2": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.35,
+        "legitimate_local": 0.59,
+        "not_a_derivation": 0.06
+      },
+      "confidence": 0.39
+    },
+    "2e5e04615fc02692": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0,
+        "legitimate_local": 0.92,
+        "not_a_derivation": 0.08
+      },
+      "confidence": 0.87
+    },
+    "fa45441ac4e23bd7": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0,
+        "legitimate_local": 0.96,
+        "not_a_derivation": 0.04
+      },
+      "confidence": 0.94
+    },
+    "531e197bfe3cdfdc": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0,
+        "legitimate_local": 0.9,
+        "not_a_derivation": 0.1
+      },
+      "confidence": 0.84
+    },
+    "4ebd108d4c9b5530": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.01,
+        "legitimate_local": 0.95,
+        "not_a_derivation": 0.04
+      },
+      "confidence": 0.93
+    },
+    "953c2ea061be0694": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0,
+        "legitimate_local": 0.85,
+        "not_a_derivation": 0.15
+      },
+      "confidence": 0.78
+    },
+    "a015e0eef67ee320": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0,
+        "legitimate_local": 0.86,
+        "not_a_derivation": 0.14
+      },
+      "confidence": 0.78
+    },
+    "fe407ef5a8f3a6f2": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.01,
+        "legitimate_local": 0.7,
+        "not_a_derivation": 0.29
+      },
+      "confidence": 0.56
+    },
+    "0de2c263234e4223": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0,
+        "legitimate_local": 0.6,
+        "not_a_derivation": 0.4
+      },
+      "confidence": 0.39
+    },
+    "f8a7ebf27e6fe16f": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.02,
+        "legitimate_local": 0.93,
+        "not_a_derivation": 0.05
+      },
+      "confidence": 0.9
+    },
+    "a1430f55767f6c8b": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.02,
+        "legitimate_local": 0.93,
+        "not_a_derivation": 0.05
+      },
+      "confidence": 0.89
+    },
+    "a83702c75939fb82": {
+      "kind": "Classify",
+      "label": "internal_only",
+      "probabilities": {
+        "unaccounted": 0.02,
+        "accounted_elsewhere": 0.01,
+        "internal_only": 0.97
+      },
+      "confidence": 0.96
+    },
+    "42bb8e448d9d1aca": {
+      "kind": "Classify",
+      "label": "internal_only",
+      "probabilities": {
+        "unaccounted": 0.01,
+        "accounted_elsewhere": 0.01,
+        "internal_only": 0.98
+      },
+      "confidence": 0.97
+    },
+    "a7585c4408c507ac": {
+      "kind": "Classify",
+      "label": "shared_vocabulary",
+      "probabilities": {
+        "names_a_caller": 0,
+        "general": 0.15,
+        "shared_vocabulary": 0.85
+      },
+      "confidence": 0.77
+    },
+    "6b32d5a1d19f6a8a": {
+      "kind": "Classify",
+      "label": "independent",
+      "probabilities": {
+        "meaning_switched": 0,
+        "independent": 0.87,
+        "appropriate": 0.13
+      },
+      "confidence": 0.81
+    },
+    "696b7046604d188b": {
+      "kind": "Classify",
+      "label": "independent",
+      "probabilities": {
+        "meaning_switched": 0,
+        "independent": 0.84,
+        "appropriate": 0.16
+      },
+      "confidence": 0.76
+    },
+    "d4907ed6a35e6917": {
+      "kind": "Classify",
+      "label": "independent",
+      "probabilities": {
+        "meaning_switched": 0,
+        "independent": 0.9,
+        "appropriate": 0.1
+      },
+      "confidence": 0.85
+    },
+    "b5ef22c6508c9251": {
+      "kind": "Classify",
+      "label": "independent",
+      "probabilities": {
+        "meaning_switched": 0,
+        "independent": 0.83,
+        "appropriate": 0.17
+      },
+      "confidence": 0.74
+    },
+    "e531d1199690065e": {
+      "kind": "Classify",
+      "label": "independent",
+      "probabilities": {
+        "meaning_switched": 0,
+        "independent": 0.92,
+        "appropriate": 0.08
+      },
+      "confidence": 0.88
+    },
+    "87d6566471f445cc": {
+      "kind": "Classify",
+      "label": "rendering",
+      "probabilities": {
+        "domain_logic": 0.02,
+        "request_validation": 0,
+        "input_adaptation": 0,
+        "mechanical": 0,
+        "transport_concern": 0.01,
+        "rendering": 0.96,
+        "orchestration": 0.01,
+        "infrastructure": 0,
+        "not_applicable": 0
+      },
+      "confidence": 0.95
+    },
+    "c5250326491cd6f6": {
+      "kind": "Classify",
+      "label": "component_or_feature",
+      "probabilities": {
+        "already_there": 0.35,
+        "route_or_handler": 0.14,
+        "component_or_feature": 0.48,
+        "not_applicable": 0.03
+      },
+      "confidence": 0.31
+    },
+    "f1f4c58b926d61f4": {
+      "kind": "Classify",
+      "label": "rendering",
+      "probabilities": {
+        "domain_logic": 0,
+        "request_validation": 0,
+        "input_adaptation": 0,
+        "mechanical": 0,
+        "transport_concern": 0.02,
+        "rendering": 0.79,
+        "orchestration": 0.19,
+        "infrastructure": 0,
+        "not_applicable": 0
+      },
+      "confidence": 0.76
+    },
+    "8312b85cd8cc7e5b": {
+      "kind": "Classify",
+      "label": "component_or_feature",
+      "probabilities": {
+        "already_there": 0.39,
+        "route_or_handler": 0.1,
+        "component_or_feature": 0.48,
+        "not_applicable": 0.03
+      },
+      "confidence": 0.31
+    },
+    "cd3ae3b6f7e64ce6": {
+      "kind": "Classify",
+      "label": "infrastructure",
+      "probabilities": {
+        "domain_logic": 0.06,
+        "request_validation": 0,
+        "input_adaptation": 0,
+        "mechanical": 0.27,
+        "transport_concern": 0,
+        "rendering": 0,
+        "orchestration": 0.01,
+        "infrastructure": 0.64,
+        "not_applicable": 0.02
+      },
+      "confidence": 0.58
+    },
+    "c6cc9167d67c5bea": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.61,
+        "route_or_handler": 0.02,
+        "component_or_feature": 0.22,
+        "not_applicable": 0.15
+      },
+      "confidence": 0.48
+    },
+    "86efa3268645b18a": {
+      "kind": "Classify",
+      "label": "rendering",
+      "probabilities": {
+        "domain_logic": 0.01,
+        "request_validation": 0,
+        "input_adaptation": 0,
+        "mechanical": 0.06,
+        "transport_concern": 0.03,
+        "rendering": 0.47000000000000003,
+        "orchestration": 0.1,
+        "infrastructure": 0.29,
+        "not_applicable": 0.04
+      },
+      "confidence": 0.39
+    },
+    "3492dead02d44969": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.44,
+        "route_or_handler": 0.07,
+        "component_or_feature": 0.3,
+        "not_applicable": 0.19
+      },
+      "confidence": 0.25
+    },
+    "0d1f0cef4febe0a7": {
+      "kind": "Classify",
+      "label": "input_adaptation",
+      "probabilities": {
+        "domain_logic": 0.01,
+        "request_validation": 0.14,
+        "input_adaptation": 0.44,
+        "mechanical": 0,
+        "transport_concern": 0.31,
+        "rendering": 0,
+        "orchestration": 0.06,
+        "infrastructure": 0.02,
+        "not_applicable": 0.02
+      },
+      "confidence": 0.37
+    },
+    "848ea93b385d479f": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.78,
+        "route_or_handler": 0.04,
+        "component_or_feature": 0.09,
+        "not_applicable": 0.09
+      },
+      "confidence": 0.71
+    },
+    "cba28d59dd486901": {
+      "kind": "Classify",
+      "label": "infrastructure",
+      "probabilities": {
+        "domain_logic": 0,
+        "request_validation": 0,
+        "input_adaptation": 0.07,
+        "mechanical": 0,
+        "transport_concern": 0.05,
+        "rendering": 0,
+        "orchestration": 0.27,
+        "infrastructure": 0.61,
+        "not_applicable": 0
+      },
+      "confidence": 0.55
+    },
+    "c84ff3244441dd24": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.74,
+        "route_or_handler": 0.04,
+        "component_or_feature": 0.1,
+        "not_applicable": 0.12
+      },
+      "confidence": 0.65
+    },
+    "7e34fb469e539c48": {
+      "kind": "Classify",
+      "label": "rendering",
+      "probabilities": {
+        "domain_logic": 0.15,
+        "request_validation": 0.01,
+        "input_adaptation": 0.2,
+        "mechanical": 0.01,
+        "transport_concern": 0.03,
+        "rendering": 0.58,
+        "orchestration": 0,
+        "infrastructure": 0,
+        "not_applicable": 0.02
+      },
+      "confidence": 0.53
+    },
+    "15dbc152367f47f1": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.8,
+        "route_or_handler": 0.02,
+        "component_or_feature": 0.08,
+        "not_applicable": 0.1
+      },
+      "confidence": 0.74
+    },
+    "5961d4f02ad18d41": {
+      "kind": "Classify",
+      "label": "rendering",
+      "probabilities": {
+        "domain_logic": 0.06,
+        "request_validation": 0,
+        "input_adaptation": 0.07,
+        "mechanical": 0.01,
+        "transport_concern": 0.02,
+        "rendering": 0.81,
+        "orchestration": 0,
+        "infrastructure": 0,
+        "not_applicable": 0.03
+      },
+      "confidence": 0.78
+    },
+    "c897ea6e49abfe9b": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.75,
+        "route_or_handler": 0.03,
+        "component_or_feature": 0.14,
+        "not_applicable": 0.08
+      },
+      "confidence": 0.67
+    },
+    "b617c874f70290ce": {
+      "kind": "Classify",
+      "label": "request_validation",
+      "probabilities": {
+        "domain_logic": 0.01,
+        "request_validation": 0.97,
+        "input_adaptation": 0.01,
+        "mechanical": 0,
+        "transport_concern": 0.01,
+        "rendering": 0,
+        "orchestration": 0,
+        "infrastructure": 0,
+        "not_applicable": 0
+      },
+      "confidence": 0.96
+    },
+    "b8c8bc549cf1331c": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.67,
+        "route_or_handler": 0.15,
+        "component_or_feature": 0.12,
+        "not_applicable": 0.06
+      },
+      "confidence": 0.55
+    },
+    "fb655976336f355a": {
+      "kind": "Classify",
+      "label": "orchestration",
+      "probabilities": {
+        "domain_logic": 0.05,
+        "request_validation": 0,
+        "input_adaptation": 0.03,
+        "mechanical": 0,
+        "transport_concern": 0.09,
+        "rendering": 0.01,
+        "orchestration": 0.69,
+        "infrastructure": 0.12,
+        "not_applicable": 0.01
+      },
+      "confidence": 0.65
+    },
+    "52ac9dc8e7e9d00e": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.46,
+        "route_or_handler": 0.32,
+        "component_or_feature": 0.18,
+        "not_applicable": 0.04
+      },
+      "confidence": 0.28
+    },
+    "04ea9293cd684e33": {
+      "kind": "Probability",
+      "probability": 0.14,
+      "consistency": 1
+    },
+    "7bae8c3d4647a1ea": {
+      "kind": "Classify",
+      "label": "domain_concept",
+      "probabilities": {
+        "wire_contract": 0.05,
+        "domain_concept": 0.9,
+        "implementation_detail": 0.05,
+        "framework_glue": 0
+      },
+      "confidence": 0.86
+    },
+    "1c7244900fe58586": {
+      "kind": "Classify",
+      "label": "same_module",
+      "probabilities": {
+        "same_module": 0.9,
+        "same_package": 0.1,
+        "sibling_packages": 0,
+        "different_deployables": 0
+      },
+      "confidence": 0.87
+    },
+    "e3ac3303534bb4f8": {
+      "kind": "Classify",
+      "label": "keep_variants",
+      "probabilities": {
+        "collapse": 0.04,
+        "keep_variants": 0.48,
+        "no_issue": 0.48
+      },
+      "confidence": 0.22
+    },
+    "64b18da0f601b102": {
+      "kind": "Rate",
+      "rating": 0.89,
+      "label": "no_difference",
+      "probabilities": {
+        "no_difference": 0.39999999999999997,
+        "slightly_clearer": 0.38,
+        "meaningfully_better": 0.13,
+        "removes_a_hazard": 0.09
+      },
+      "confidence": 0.11
+    },
+    "f8c509b1994b2397": {
+      "kind": "Classify",
+      "label": "member_0",
+      "probabilities": {
+        "member_0": 0.52,
+        "member_1": 0.48
+      },
+      "confidence": 0.03
+    },
+    "04585ae64a1ea5a8": {
+      "kind": "Classify",
+      "label": "meaning",
+      "probabilities": {
+        "value": 0.11,
+        "meaning": 0.89,
+        "unclear": 0
+      },
+      "confidence": 0.83
+    },
+    "b1597e7e58c6908f": {
+      "kind": "Classify",
+      "label": "move",
+      "probabilities": {
+        "merge": 0.37,
+        "move": 0.38,
+        "split": 0.04,
+        "share_a_contract": 0.05,
+        "leave_it": 0.16
+      },
+      "confidence": 0.23
+    },
+    "ebec01ff4594953d": {
+      "kind": "Classify",
+      "label": "move",
+      "probabilities": {
+        "merge": 0.06,
+        "move": 0.5,
+        "no_issue": 0.44
+      },
+      "confidence": 0.25
+    },
+    "d2a26ebe9d1d0117": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.03,
+        "legitimate_local": 0.78,
+        "not_a_derivation": 0.19
+      },
+      "confidence": 0.68
+    },
+    "3c9e9740716a8377": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.01,
+        "legitimate_local": 0.76,
+        "not_a_derivation": 0.23
+      },
+      "confidence": 0.65
+    },
+    "6704b9fa5cdf72e8": {
+      "kind": "Classify",
+      "label": "not_a_derivation",
+      "probabilities": {
+        "reimplements": 0.18,
+        "legitimate_local": 0.26,
+        "not_a_derivation": 0.5599999999999999
+      },
+      "confidence": 0.35
+    },
+    "9dae9c9d406ebd8a": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.02,
+        "legitimate_local": 0.95,
+        "not_a_derivation": 0.03
+      },
+      "confidence": 0.92
+    },
+    "cdfcb720aff755a3": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.06,
+        "legitimate_local": 0.81,
+        "not_a_derivation": 0.13
+      },
+      "confidence": 0.72
+    },
+    "c0a415baa2c21f89": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.09,
+        "legitimate_local": 0.54,
+        "not_a_derivation": 0.37
+      },
+      "confidence": 0.32
+    },
+    "ad7b6e21e677a43f": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.09,
+        "legitimate_local": 0.83,
+        "not_a_derivation": 0.08
+      },
+      "confidence": 0.75
+    },
+    "e1bfff2e9b91e187": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.04,
+        "legitimate_local": 0.58,
+        "not_a_derivation": 0.38
+      },
+      "confidence": 0.38
+    },
+    "2f5c2bb8fae46b3b": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.08,
+        "legitimate_local": 0.52,
+        "not_a_derivation": 0.4
+      },
+      "confidence": 0.27
+    },
+    "42a7186706e83830": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.01,
+        "legitimate_local": 0.9299999999999999,
+        "not_a_derivation": 0.06
+      },
+      "confidence": 0.9
+    },
+    "d25e1e02f5604e00": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.07,
+        "legitimate_local": 0.78,
+        "not_a_derivation": 0.15
+      },
+      "confidence": 0.67
+    },
+    "ebf0dc2432e93b81": {
+      "kind": "Classify",
+      "label": "rendering",
+      "probabilities": {
+        "domain_logic": 0.02,
+        "request_validation": 0,
+        "input_adaptation": 0,
+        "mechanical": 0,
+        "transport_concern": 0.01,
+        "rendering": 0.96,
+        "orchestration": 0.01,
+        "infrastructure": 0,
+        "not_applicable": 0
+      },
+      "confidence": 0.95
+    },
+    "edfd7be3d79af8ec": {
+      "kind": "Classify",
+      "label": "component_or_feature",
+      "probabilities": {
+        "already_there": 0.35,
+        "route_or_handler": 0.14,
+        "component_or_feature": 0.48,
+        "not_applicable": 0.03
+      },
+      "confidence": 0.31
+    },
+    "62de2b0e13638412": {
+      "kind": "Classify",
+      "label": "rendering",
+      "probabilities": {
+        "domain_logic": 0,
+        "request_validation": 0,
+        "input_adaptation": 0,
+        "mechanical": 0,
+        "transport_concern": 0.02,
+        "rendering": 0.79,
+        "orchestration": 0.19,
+        "infrastructure": 0,
+        "not_applicable": 0
+      },
+      "confidence": 0.76
+    },
+    "29dbe9e48b101143": {
+      "kind": "Classify",
+      "label": "component_or_feature",
+      "probabilities": {
+        "already_there": 0.39,
+        "route_or_handler": 0.1,
+        "component_or_feature": 0.48,
+        "not_applicable": 0.03
+      },
+      "confidence": 0.31
+    },
+    "9e7966154b96c296": {
+      "kind": "Classify",
+      "label": "infrastructure",
+      "probabilities": {
+        "domain_logic": 0.06,
+        "request_validation": 0,
+        "input_adaptation": 0,
+        "mechanical": 0.27,
+        "transport_concern": 0,
+        "rendering": 0,
+        "orchestration": 0.01,
+        "infrastructure": 0.64,
+        "not_applicable": 0.02
+      },
+      "confidence": 0.58
+    },
+    "b8be7b9c4760657f": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.61,
+        "route_or_handler": 0.02,
+        "component_or_feature": 0.22,
+        "not_applicable": 0.15
+      },
+      "confidence": 0.48
+    },
+    "533a73ef54c2facb": {
+      "kind": "Classify",
+      "label": "rendering",
+      "probabilities": {
+        "domain_logic": 0.01,
+        "request_validation": 0,
+        "input_adaptation": 0,
+        "mechanical": 0.06,
+        "transport_concern": 0.03,
+        "rendering": 0.47000000000000003,
+        "orchestration": 0.1,
+        "infrastructure": 0.29,
+        "not_applicable": 0.04
+      },
+      "confidence": 0.39
+    },
+    "7c6ae020ac4ea462": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.44,
+        "route_or_handler": 0.07,
+        "component_or_feature": 0.3,
+        "not_applicable": 0.19
+      },
+      "confidence": 0.25
+    },
+    "61056f6e12d9b49c": {
+      "kind": "Classify",
+      "label": "input_adaptation",
+      "probabilities": {
+        "domain_logic": 0.01,
+        "request_validation": 0.14,
+        "input_adaptation": 0.44,
+        "mechanical": 0,
+        "transport_concern": 0.31,
+        "rendering": 0,
+        "orchestration": 0.06,
+        "infrastructure": 0.02,
+        "not_applicable": 0.02
+      },
+      "confidence": 0.37
+    },
+    "dd478886f548951e": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.78,
+        "route_or_handler": 0.04,
+        "component_or_feature": 0.09,
+        "not_applicable": 0.09
+      },
+      "confidence": 0.71
+    },
+    "af126d313518414d": {
+      "kind": "Classify",
+      "label": "infrastructure",
+      "probabilities": {
+        "domain_logic": 0,
+        "request_validation": 0,
+        "input_adaptation": 0.07,
+        "mechanical": 0,
+        "transport_concern": 0.05,
+        "rendering": 0,
+        "orchestration": 0.27,
+        "infrastructure": 0.61,
+        "not_applicable": 0
+      },
+      "confidence": 0.55
+    },
+    "7f3e4ef53da99c21": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.74,
+        "route_or_handler": 0.04,
+        "component_or_feature": 0.1,
+        "not_applicable": 0.12
+      },
+      "confidence": 0.65
+    },
+    "d6e6ee85d1a9ec27": {
+      "kind": "Classify",
+      "label": "rendering",
+      "probabilities": {
+        "domain_logic": 0.15,
+        "request_validation": 0.01,
+        "input_adaptation": 0.2,
+        "mechanical": 0.01,
+        "transport_concern": 0.03,
+        "rendering": 0.58,
+        "orchestration": 0,
+        "infrastructure": 0,
+        "not_applicable": 0.02
+      },
+      "confidence": 0.53
+    },
+    "29f8f788178e66bd": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.8,
+        "route_or_handler": 0.02,
+        "component_or_feature": 0.08,
+        "not_applicable": 0.1
+      },
+      "confidence": 0.74
+    },
+    "e766288890033884": {
+      "kind": "Classify",
+      "label": "rendering",
+      "probabilities": {
+        "domain_logic": 0.06,
+        "request_validation": 0,
+        "input_adaptation": 0.07,
+        "mechanical": 0.01,
+        "transport_concern": 0.02,
+        "rendering": 0.81,
+        "orchestration": 0,
+        "infrastructure": 0,
+        "not_applicable": 0.03
+      },
+      "confidence": 0.78
+    },
+    "fe5a6035e03d0938": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.75,
+        "route_or_handler": 0.03,
+        "component_or_feature": 0.14,
+        "not_applicable": 0.08
+      },
+      "confidence": 0.67
+    },
+    "b9d9b142c23f8d2d": {
+      "kind": "Classify",
+      "label": "request_validation",
+      "probabilities": {
+        "domain_logic": 0.01,
+        "request_validation": 0.97,
+        "input_adaptation": 0.01,
+        "mechanical": 0,
+        "transport_concern": 0.01,
+        "rendering": 0,
+        "orchestration": 0,
+        "infrastructure": 0,
+        "not_applicable": 0
+      },
+      "confidence": 0.96
+    },
+    "11f0be6df70a6310": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.67,
+        "route_or_handler": 0.15,
+        "component_or_feature": 0.12,
+        "not_applicable": 0.06
+      },
+      "confidence": 0.55
+    },
+    "b2a7251a46dd18c5": {
+      "kind": "Classify",
+      "label": "orchestration",
+      "probabilities": {
+        "domain_logic": 0.05,
+        "request_validation": 0,
+        "input_adaptation": 0.03,
+        "mechanical": 0,
+        "transport_concern": 0.09,
+        "rendering": 0.01,
+        "orchestration": 0.69,
+        "infrastructure": 0.12,
+        "not_applicable": 0.01
+      },
+      "confidence": 0.65
+    },
+    "55c500c84949b2db": {
+      "kind": "Classify",
+      "label": "already_there",
+      "probabilities": {
+        "already_there": 0.46,
+        "route_or_handler": 0.32,
+        "component_or_feature": 0.18,
+        "not_applicable": 0.04
+      },
+      "confidence": 0.28
+    },
+    "8b9dcb529e72ef8a": {
+      "kind": "Probability",
+      "probability": 0.14222222222222225,
+      "consistency": 1
+    },
+    "81fd9ab0d0bb9a25": {
+      "kind": "Classify",
+      "label": "domain_concept",
+      "probabilities": {
+        "wire_contract": 0.05,
+        "domain_concept": 0.9,
+        "implementation_detail": 0.05,
+        "framework_glue": 0
+      },
+      "confidence": 0.86
+    },
+    "5127c5a0689cfa6a": {
+      "kind": "Classify",
+      "label": "same_module",
+      "probabilities": {
+        "same_module": 0.9,
+        "same_package": 0.1,
+        "sibling_packages": 0,
+        "different_deployables": 0
+      },
+      "confidence": 0.87
+    },
+    "2854cb6d4fd1e552": {
+      "kind": "Classify",
+      "label": "keep_variants",
+      "probabilities": {
+        "collapse": 0.04,
+        "keep_variants": 0.48,
+        "no_issue": 0.48
+      },
+      "confidence": 0.22
+    },
+    "a70286aeb6091572": {
+      "kind": "Rate",
+      "rating": 0.89,
+      "label": "no_difference",
+      "probabilities": {
+        "no_difference": 0.39999999999999997,
+        "slightly_clearer": 0.38,
+        "meaningfully_better": 0.13,
+        "removes_a_hazard": 0.09
+      },
+      "confidence": 0.11
+    },
+    "c28e471ce83443c2": {
+      "kind": "Classify",
+      "label": "member_0",
+      "probabilities": {
+        "member_0": 0.52,
+        "member_1": 0.48
+      },
+      "confidence": 0.03
+    },
+    "50154b63f68feec3": {
+      "kind": "Classify",
+      "label": "meaning",
+      "probabilities": {
+        "value": 0.11,
+        "meaning": 0.89,
+        "unclear": 0
+      },
+      "confidence": 0.83
+    },
+    "1872d986e2e8b35c": {
+      "kind": "Classify",
+      "label": "move",
+      "probabilities": {
+        "merge": 0.37,
+        "move": 0.38,
+        "split": 0.04,
+        "share_a_contract": 0.05,
+        "leave_it": 0.16
+      },
+      "confidence": 0.23
+    },
+    "109a6f5af832ada5": {
+      "kind": "Classify",
+      "label": "move",
+      "probabilities": {
+        "merge": 0.06,
+        "move": 0.5,
+        "no_issue": 0.44
+      },
+      "confidence": 0.25
+    },
+    "0284c969fd1660ea": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.03,
+        "legitimate_local": 0.78,
+        "not_a_derivation": 0.19
+      },
+      "confidence": 0.68
+    },
+    "5f7fc69d92bead62": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.01,
+        "legitimate_local": 0.76,
+        "not_a_derivation": 0.23
+      },
+      "confidence": 0.65
+    },
+    "55640beb6c509f12": {
+      "kind": "Classify",
+      "label": "not_a_derivation",
+      "probabilities": {
+        "reimplements": 0.18,
+        "legitimate_local": 0.26,
+        "not_a_derivation": 0.5599999999999999
+      },
+      "confidence": 0.35
+    },
+    "e5982625fc1663a1": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.02,
+        "legitimate_local": 0.95,
+        "not_a_derivation": 0.03
+      },
+      "confidence": 0.92
+    },
+    "225baf555d3b0aa2": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.06,
+        "legitimate_local": 0.81,
+        "not_a_derivation": 0.13
+      },
+      "confidence": 0.72
+    },
+    "aebe9c4ef47a7a63": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.09,
+        "legitimate_local": 0.54,
+        "not_a_derivation": 0.37
+      },
+      "confidence": 0.32
+    },
+    "330eb23cc1d2c430": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.09,
+        "legitimate_local": 0.83,
+        "not_a_derivation": 0.08
+      },
+      "confidence": 0.75
+    },
+    "1b7ff37513bddd20": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.04,
+        "legitimate_local": 0.58,
+        "not_a_derivation": 0.38
+      },
+      "confidence": 0.38
+    },
+    "c1b2dbb02e4ff26d": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.08,
+        "legitimate_local": 0.52,
+        "not_a_derivation": 0.4
+      },
+      "confidence": 0.27
+    },
+    "cc8d0bdf1ca4bcc2": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.01,
+        "legitimate_local": 0.9299999999999999,
+        "not_a_derivation": 0.06
+      },
+      "confidence": 0.9
+    },
+    "f34e38cd00739158": {
+      "kind": "Classify",
+      "label": "legitimate_local",
+      "probabilities": {
+        "reimplements": 0.07,
+        "legitimate_local": 0.78,
+        "not_a_derivation": 0.15
+      },
+      "confidence": 0.67
     }
   }
 }

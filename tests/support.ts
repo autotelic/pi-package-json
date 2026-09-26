@@ -1,8 +1,8 @@
 import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
-import { DEFAULT_CONFIG } from "../extensions/package-scripts/config.ts";
-import type { ScriptsConfig } from "../extensions/package-scripts/config.ts";
+import { DEFAULT_CONFIG } from "../extensions/config.ts";
+import type { ScriptsConfig } from "../extensions/config.ts";
 
 /** A `package.json` body for a fixture, as the manifest schema describes it. */
 export interface ManifestInput {

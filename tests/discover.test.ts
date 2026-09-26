@@ -1,7 +1,7 @@
 import { execFileSync } from "node:child_process";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { discover, environmentNames, parseManagerField } from "../extensions/package-scripts/discover.ts";
+import { discover, environmentNames, parseManagerField } from "../extensions/discover.ts";
 import { config, json, manifest, workspace } from "./support.ts";
 
 describe("parseManagerField", () => {

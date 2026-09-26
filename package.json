@@ -5,6 +5,13 @@
   "description": "Pi extension that turns every package.json script in a monorepo into a named pi tool.",
   "license": "MIT",
   "packageManager": "pnpm@12.3.4",
+  "homepage": "https://github.com/autotelic/pi-package-json#readme",
+  "bugs": {
+    "url": "https://github.com/autotelic/pi-package-json/issues"
+  },
+  "engines": {
+    "node": ">=22.19.0"
+  },
   "keywords": ["pi-package", "pi-extension", "monorepo", "package-json", "scripts"],
   "repository": {
     "type": "git",
@@ -18,6 +25,7 @@
     "lint": "oxlint .",
     "lint:fix": "oxlint --fix .",
     "joggle": "node --conditions=development ${JOGGLE_ENTRY:-../mess/src/main.ts} check .",
+    "prepublishOnly": "npm run lint && npm run typecheck && npm run test",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm joggle"

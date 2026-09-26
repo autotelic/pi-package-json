@@ -325,11 +325,22 @@ grant project trust.
 pi install -l git:github.com/autotelic/pi-package-json@v0.1.0
 ```
 
+**From npm**, which is also how it reaches the [Pi package gallery](https://pi.dev/packages):
+
+```sh
+pi install npm:pi-package-json
+```
+
 **For one run**, while you are working on the extension itself.
 
 ```sh
 pi -e /absolute/path/to/pi-package-json
 ```
+
+Load the extension twice -- once installed and once with `-e` -- and both copies
+register tools for the same directory. The second copy renames rather than
+collides, so the roster reads `run_hello` and `run_root_hello`. Add
+`--no-extensions` when you mean to load one copy.
 
 ## Pi Fabric
 
@@ -363,3 +374,19 @@ from source next door; set `JOGGLE_ENTRY` if your checkout is not at
 ```sh
 JOGGLE_ENTRY=/path/to/joggle/src/main.ts pnpm joggle
 ```
+
+That script names a path outside this repository, so it is a local-only
+convenience and `prepublishOnly` deliberately does not call it.
+
+## Publishing
+
+The gallery lists what npm lists: an npm package carrying the `pi-package`
+keyword. There is nothing to apply for.
+
+```sh
+npm login
+npm publish
+```
+
+`prepublishOnly` runs lint, typecheck and test first, so a broken revision
+cannot reach the registry. A version, once published, cannot be taken back.

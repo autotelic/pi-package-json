@@ -1,0 +1,83 @@
+{
+  "rules": {
+    "joggle/import-cycle": "error",
+    "joggle/layer-direction": "error",
+    "joggle/layer-purity": "error",
+    "joggle/field-type-drift": "warn",
+    "joggle/duplicate-meaning": "warn",
+    "joggle/naming-drift": "warn",
+    "joggle/module-direction": "warn",
+    "joggle/hoist-to-domain": "warn",
+    "joggle/unaccounted-drop": "warn",
+    "joggle/meaning-switched-by-flag": "warn",
+    "joggle/generic-carries-a-caller": "warn"
+  },
+  "ignore": [
+    {
+      "rule": "joggle/single-path",
+      "path": "extensions/**",
+      "reason": "single-path reports a template literal in a file that also calls a helper it believes produces the same display value. Eleven of its twelve findings here are the English prose of a tool description or a report line -- 'Run the \"build\" script of services/rest with pnpm' -- and the helper it names (matchesPattern, errorText, readJson) produces neither a description nor a report line. The rule is right about the shape and wrong about the value, and rewording a tool's description to silence it would be the tool writing the documentation."
+    },
+    {
+      "rule": "joggle/meaning-switched-by-flag",
+      "path": "extensions/package-scripts/exec.ts",
+      "reason": "RunOutcome.timedOut and Clamped.truncated add a fact rather than switch a meaning: stdout/stderr/code mean the same thing whether or not the timeout fired, and Clamped.text means the same thing whether or not it was cut. A union would add a discriminant that carries no data of its own. Declared rather than remodelled because the reader is not at risk of the wrong reading that the rule exists to prevent."
+    },
+    {
+      "rule": "joggle/meaning-switched-by-flag",
+      "path": "extensions/package-scripts/types.ts",
+      "reason": "Clamped.truncated is an added fact, not a discriminant. See the exception on extensions/package-scripts/exec.ts for the full reason; the declaration lives in types.ts and the branch lives in index.ts."
+    },
+    {
+      "rule": "joggle/meaning-switched-by-flag",
+      "path": "extensions/package-scripts/index.ts",
+      "reason": "describeOutcome branches on RunOutcome.timedOut and Clamped.truncated to add a line to a message. Both are added facts rather than discriminants: every other field of the value means the same thing either way. See the exception on extensions/package-scripts/exec.ts."
+    },
+    {
+      "rule": "joggle/generic-carries-a-caller",
+      "path": "extensions/package-scripts/schema.ts",
+      "reason": "readJson passes 'utf8' to readFileSync, and the rule asks for it to be a parameter because two callers share the function. That is the right shape for a label, a route or a copy -- things one caller may want differently. It is the wrong shape for an encoding: a package.json or a package-scripts.json read as latin1 is a bug, not a caller's choice, and a parameter would invite it."
+    },
+    {
+      "rule": "joggle/unaccounted-drop",
+      "path": "tests/support.ts",
+      "reason": "workspace treats a key that ends in a forward slash as a directory and every other key as a file. Nothing is dropped: the directory it makes is in the fixture it returns, and the caller wrote the key. The rule reads a branch that narrows a collection as a silent shortening of input, which is what it is in a parser and is not what it is in a fixture builder."
+    }
+  ],
+  "architecture": {
+    "layers": [
+      {
+        "name": "kernel",
+        "include": [
+          "extensions/package-scripts/types.ts",
+          "extensions/package-scripts/text.ts",
+          "extensions/package-scripts/clock.ts",
+          "extensions/package-scripts/schema.ts"
+        ]
+      },
+      {
+        "name": "domain",
+        "include": [
+          "extensions/package-scripts/config.ts",
+          "extensions/package-scripts/naming.ts"
+        ]
+      },
+      {
+        "name": "engine",
+        "include": [
+          "extensions/package-scripts/discover.ts",
+          "extensions/package-scripts/exec.ts"
+        ]
+      },
+      {
+        "name": "entry",
+        "include": [
+          "extensions/package-scripts/index.ts"
+        ]
+      }
+    ]
+  },
+  "evidence": {
+    "repository": "A Pi extension: a Node program that runs inside the Pi process and registers one pi tool for every package.json script under the directory pi was launched in. It renders no components and depends on no Effect runtime, so the composition and effect rule families are not enabled here."
+  }
+}

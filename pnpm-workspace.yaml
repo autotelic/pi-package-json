@@ -1,0 +1,8 @@
+# pnpm reads project settings from this file, not from package.json.
+
+allowBuilds:
+  # esbuild places its platform binary with a postinstall script. vitest needs it.
+  esbuild: true
+  # These arrive with the pi-coding-agent dependency tree and no script here uses them.
+  '@google/genai': false
+  protobufjs: false

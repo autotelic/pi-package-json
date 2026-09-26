@@ -32,6 +32,19 @@ export const clamp = (value: string, limit: number): Clamped => {
 export const durationText = (milliseconds: number): string =>
 	`${(milliseconds / 1_000).toFixed(1)}s`;
 
-/** Shorten a string to one line of at most `limit` characters. */
-export const shorten = (value: string, limit: number): string =>
-	value.length <= limit ? value : `${value.slice(0, limit - 1)}…`;
+/**
+ * Shorten a string to one line of at most `limit` characters, keeping both ends.
+ *
+ * The two ends of a command carry the parts a reader decides with: the program
+ * and its first argument at the front, the environment and the target at the
+ * back. Cutting only the tail hides exactly what a dangerous script names, so a
+ * command that must be shortened loses its middle and says how much went.
+ */
+export const shorten = (value: string, limit: number): string => {
+	if (value.length <= limit) return value;
+	const omitted = value.length - limit;
+	const marker = ` … [${omitted} characters] … `;
+	const room = limit - marker.length;
+	const head = Math.ceil(room * 0.55);
+	return `${value.slice(0, head)}${marker}${value.slice(-(room - head))}`;
+};

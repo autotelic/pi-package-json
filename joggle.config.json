@@ -13,38 +13,7 @@
     "joggle/generic-carries-a-caller": "warn",
     "joggle/single-path": "warn"
   },
-  "ignore": [
-    {
-      "rule": "joggle/single-path",
-      "path": "extensions/**",
-      "reason": "This rule is JUDGED. It reports every string site inside a unit whose file also calls any helper that two or more files call, and then asks a model whether the helper already produces that value. It never decides the value itself, so this exception is not a claim that the rule is wrong -- it is noise control on a machine with no TYPESAFE_API_KEY, where onUnavailable: 'report' prints every candidate as an unverified warning. All twelve candidates were the English prose of a tool description or of a report line, and no helper in this repository produces either. The exception is scoped to extensions/** so that the rest of the repository is still checked, and it can be deleted on a machine that has a model key. See the feedback note in the README."
-    },
-    {
-      "rule": "joggle/meaning-switched-by-flag",
-      "path": "extensions/**",
-      "reason": "Judged, and unjudged here for the same reason as single-path. The candidate is any guard whose test names a field that some declaration types as boolean; RunOutcome.timedOut beside code/durationMs/stdout/stderr and Clamped.truncated beside text are two such candidates. The judge is given the flag's owner declaration and its field list, so it has what it needs to answer 'independent' -- a flag that selects behaviour while no value changes meaning. This exception exists because no key reached the provider, not because the rule cannot tell."
-    },
-    {
-      "rule": "joggle/generic-carries-a-caller",
-      "path": "extensions/**",
-      "reason": "Judged, and unjudged here for the same reason as single-path. The candidate is any string literal of four characters or more, containing a lowercase letter, inside an exported unit that two or more files call; readJson is exported, two files call it, and it contains 'utf8'. The literal filter admits identifiers, encodings and format strings BY DESIGN, because the rule refuses to keep a vocabulary of caller-naming words -- its own docstring records that matching route names was the coupling that had to go. 'utf8' is therefore a true candidate, and only the judgement separates it from a caller's label."
-    },
-    {
-      "rule": "joggle/unaccounted-drop",
-      "path": "tests/support.ts",
-      "reason": "Judged, unjudged here, AND a genuine gap worth reporting. The candidate is any exported function containing a continue; workspace skips a directory key and is exported, so it qualifies. Its caller is a test, and that is the gap: joggle already knows what a test file is -- policy.testFiles holds the pattern and workspace records unit.test -- and check.ts uses it to keep test declarations out of duplicate-implementation. This rule does not consult it. Skipping unit.test here would remove this finding in every repository, not only this one. See the feedback note in the README."
-    },
-    {
-      "rule": "joggle/inferred-over-recorded",
-      "path": "extensions/**",
-      "reason": "The rule pairs 'this function derives a boolean' with 'some declaration in this file records a boolean' and does not check that they are the same fact. Three findings, none of them a fact recorded twice: scriptsFrom derives looksLikeAnOption(name) while ScriptsConfig records respectGitignore; readIgnoreFile derives 'the line compiled' while IgnoreRule records negated; timeoutMilliseconds derives 'the caller named no timeout' while respectGitignore is recorded again. A subject comparison would settle all three. Reported as feedback; the exception is scoped to this package so the rule still runs on the rest of the repository."
-    },
-    {
-      "rule": "joggle/unaccounted-drop",
-      "path": "extensions/package-scripts/ignore.ts",
-      "reason": "isIgnored skips a rule that cannot apply to the path -- a directory-only rule tested against a file, or a rule declared in a directory the path is not under. Nothing is dropped from a caller's view: the function answers one boolean question, and the rules it stepped over were never going to change that answer. The rule reads a `continue` in an exported function as a funnel that shortened the caller's data. Reported as feedback; see the note in the README."
-    }
-  ],
+  "unavailable": "count",
   "architecture": {
     "layers": [
       {

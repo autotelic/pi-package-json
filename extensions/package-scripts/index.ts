@@ -38,7 +38,7 @@
  *   }
  */
 import { createHash } from "node:crypto";
-import { readdirSync, statSync } from "node:fs";
+import { existsSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -74,6 +74,14 @@ const STDOUT_LIMIT = 16_000;
 const STDERR_LIMIT = 6_000;
 /** Rows the `/packages` report prints before it summarises the rest. */
 const REPORT_LIMIT = 60;
+/**
+ * Characters kept from a script's command text.
+ *
+ * Generous, because the command is the evidence a caller decides with, and a
+ * command that is cut in the wrong place hides the environment or the target a
+ * dangerous script names. A command longer than this keeps both ends.
+ */
+const COMMAND_LIMIT = 400;
 
 /**
  * The parameter schema for one session.
@@ -181,6 +189,29 @@ const identity = (): string => {
 	return `${manifest.name} ${manifest.version} - ${directory}`;
 };
 
+/** The configuration file `/packages init` writes at the scan root. */
+const CONFIG_FILE = "package-scripts.json";
+
+/**
+ * A starter configuration naming every script the scan found.
+ *
+ * A note is the only risk information a repository can give this extension, and
+ * the review that asked for one found a repository with none at all. An empty
+ * field is easy to fill in and easy to notice, so writing the file is what turns
+ * "the repository says nothing" from a design gap into a task with a place to
+ * happen.
+ */
+export const starterConfig = (tools: ReadonlyArray<PlannedTool>): string => {
+	const notes: Record<string, string> = {};
+	const names = [...new Set(tools.map((tool) => tool.script.name))].sort((left, right) =>
+		left.localeCompare(right),
+	);
+	for (const name of names) {
+		notes[name] = "";
+	}
+	return `${JSON.stringify({ notes }, null, 2)}\n`;
+};
+
 /** One log directory per repository, so two checkouts never overwrite each other. */
 const logDirectory = (root: string): string =>
 	join(tmpdir(), "pi-package-scripts", createHash("sha1").update(root).digest("hex").slice(0, 12));
@@ -201,10 +232,10 @@ const describeTool = (tool: PlannedTool): string => {
 		`Run the "${tool.script.name}" script of ${placeOf(tool)} with ${tool.pkg.manager}, from that directory.`,
 	];
 	if (tool.script.note !== undefined) lines.push(`Note: ${tool.script.note}`);
-	lines.push(`Command: ${shorten(tool.script.command, 240)}`);
+	lines.push(`Command: ${shorten(tool.script.command, COMMAND_LIMIT)}`);
 	if (tool.script.reads.length > 0) {
 		lines.push(
-			`The script reads ${tool.script.reads.join(", ")} out of the environment. Give a value in \`env\`.`,
+			`The script refers to ${tool.script.reads.join(", ")}, which may come from the environment. Set \`env\` only if the script expects them there.`,
 		);
 	}
 	if (tool.script.background) {
@@ -490,9 +521,28 @@ export default function packageScripts(pi: ExtensionAPI): void {
 
 	pi.registerCommand("packages", {
 		description:
-			"Show the package.json scripts this extension turned into tools. Give a name pattern to filter, or 'reload' to scan again.",
+			"Show the package.json scripts this extension turned into tools. Give a name pattern to filter, 'reload' to scan again, or 'init' to write a starter package-scripts.json.",
 		handler: async (args: string, ctx: ExtensionCommandContext) => {
-			if (args.trim() === "reload") {
+			const asked = args.trim();
+			if (asked === "init") {
+				if (state === undefined) {
+					ctx.ui.notify("package.json scripts: the scan has not run in this session.", "warning");
+					return;
+				}
+				const target = join(state.root, CONFIG_FILE);
+				if (existsSync(target)) {
+					ctx.ui.notify(`${target} already exists. Edit it rather than replacing it.`, "warning");
+					return;
+				}
+				writeFileSync(target, starterConfig(state.tools));
+				const names = new Set(state.tools.map((tool) => tool.script.name)).size;
+				ctx.ui.notify(
+					`Wrote ${target} with ${numberOf(names, "script name")}. Fill in the notes for the scripts a caller should be warned about.`,
+					"info",
+				);
+				return;
+			}
+			if (asked === "reload") {
 				const loaded = load(ctx.cwd);
 				announce(ctx, loaded);
 				ctx.ui.notify(
@@ -505,7 +555,7 @@ export default function packageScripts(pi: ExtensionAPI): void {
 				ctx.ui.notify("package.json scripts: the scan has not run in this session.", "warning");
 				return;
 			}
-			ctx.ui.notify(fullReport(state, args.trim(), loadedAt), "info");
+			ctx.ui.notify(fullReport(state, asked, loadedAt), "info");
 		},
 	});
 }

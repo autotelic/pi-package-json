@@ -24,7 +24,7 @@
   "scripts": {
     "lint": "oxlint .",
     "lint:fix": "oxlint --fix .",
-    "joggle": "node --conditions=development ${JOGGLE_ENTRY:-../mess/src/main.ts} check .",
+    "joggle": "joggle check .",
     "prepublishOnly": "npm run lint && npm run typecheck && npm run test",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",

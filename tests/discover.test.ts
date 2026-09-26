@@ -32,6 +32,37 @@ describe("environmentNames", () => {
 	it("ignores a digit-only reference", () => {
 		expect(environmentNames("tsc $1")).toEqual([]);
 	});
+
+	/**
+	 * A shell reads a positional argument, a loop variable and a local the same
+	 * way it reads the environment. What can be told is which names the command
+	 * writes for itself, and setting one of those sends the caller to `env` for
+	 * a value the script throws away.
+	 */
+	it("ignores a name the command assigns", () => {
+		expect(environmentNames("NODE_ENV=production node build.js")).toEqual([]);
+		expect(environmentNames("tenant=$1; echo $tenant")).toEqual([]);
+	});
+
+	it("ignores the variable of a shell loop", () => {
+		expect(environmentNames("for cmd in a b; do echo $cmd; done")).toEqual([]);
+	});
+
+	it("still reports a name the command only reads", () => {
+		expect(environmentNames("NODE_ENV=production node build.js $DATABASE_URL")).toEqual([
+			"DATABASE_URL",
+		]);
+	});
+
+	it("does not mistake a command-line option for an assignment", () => {
+		expect(environmentNames("pnpm test --reporter=dot $PATTERN")).toEqual(["PATTERN"]);
+	});
+
+	it("reports nothing for the wrapper that declares its own inputs", () => {
+		const command =
+			"sh -c 'tenant=$1; if [ -z \"$tenant\" ]; then exit 1; fi; for cmd in a b; do run $cmd $tenant; done' --";
+		expect(environmentNames(command)).toEqual([]);
+	});
 });
 
 describe("discover", () => {

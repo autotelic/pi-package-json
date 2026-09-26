@@ -151,7 +151,7 @@ Every tool takes the same five parameters.
 | Parameter | Meaning |
 |---|---|
 | `args` | Extra arguments for the script. pnpm, yarn and bun receive them directly. npm receives them after a `--` separator, which the extension adds for npm alone -- pnpm passes a separator through to the script, so the script would receive a literal `--`. |
-| `env` | Extra environment variables. The description names the ones the script reads. |
+| `env` | Extra environment variables. The description names the ones the script refers to and does not assign. |
 | `timeout` | Seconds before the script is stopped. The default is the configured `timeoutSeconds`; the largest allowed value is 3600. |
 | `background` | Start the script detached and return at once with a pid and a log path. Use it for servers and watchers, which do not exit. |
 | `settle` | Report a non-zero exit as a result rather than as a failed call. **A program that branches on an exit code must pass this.** Without it a failing script aborts the caller. |
@@ -257,6 +257,21 @@ With a note, they separate:
 The note goes above the command, because it is the part that says what the
 script does.
 
+`/packages init` writes a starter `package-scripts.json` naming every script it
+found, with an empty note beside each. A repository with no configuration has no
+place to record what its scripts do; that command gives it one.
+
+### The environment hint is an upper bound
+
+A shell reads a positional argument, a loop variable and a secret the same way
+it reads the environment, and the `reads` line is a scanner's reading of a shell
+string. It excludes names the command assigns for itself -- the left of an
+assignment, the variable of a `for ... in` -- because a caller who sets one of
+those sets something the script overwrites. Everything else it reports as
+something the script *refers to*, and the wording says may rather than does.
+
+When the hint and the script disagree, the command text is the authority.
+
 ### Background scripts
 
 A watcher or a development server never exits. Without `backgroundScripts`, a
@@ -280,6 +295,30 @@ names the target rather than leaving two names for one action:
 
     run_db_migrate -> . - db:migrate  (delegates to run_db_knex_migrate)
     run_db_knex_migrate -> services/db - knex:migrate
+
+### Risk is declared in Fabric, not here
+
+Fabric classifies every captured tool, and an extension tool with no override
+gets the conservative `execute`. A repository that wants a read-only script and
+a migration shown differently says so in Fabric's own configuration, keyed by
+the tool name this extension registers -- and `/packages` prints those names:
+
+```json
+{
+  "capture": {
+    "risks": {
+      "run_harness_report": "read",
+      "run_tools_format": "write",
+      "run_auth_start": "execute"
+    }
+  }
+}
+```
+
+That is the honest split. The extension reports what it can prove -- the
+command, the package, the directory, the environment names -- and Fabric owns
+the policy. A `note` is the repository's own sentence about a script, and it
+appears in the description before the command.
 
 ## Known limits
 
@@ -306,6 +345,13 @@ rescan adds and renames; it does not subtract.
 **A process tree is not killed on Windows.** There are no process groups to
 signal there, so only the child is stopped and a script that started another
 program can leave it behind. On macOS and Linux the whole group is signalled.
+
+**A failed call loses its structured details under Fabric.** The extension
+returns details with the exit code, the duration and the log path, and a
+`tool_result` handler marks the call failed by reading them. Fabric turns a
+failed nested call into a thrown error, which carries the message and not the
+details, so a `fabric_exec` program that wants the exit code passes
+`settle: true` -- or catches, and reads the log path out of the message.
 
 ## Install
 
@@ -367,12 +413,12 @@ The lint ruleset is the Autotelic plumb generic set, registered in
 `oxlint.config.ts`. Declared exceptions live in that file's `overrides` and in
 `joggle.config.json`'s `ignore`, each with the disagreement written down.
 
-joggle is an internal tool and is not published to npm. `pnpm joggle` runs it
-from source next door; set `JOGGLE_ENTRY` if your checkout is not at
-`../mess/src/main.ts`.
+joggle is an internal tool and is not published to npm. `pnpm joggle` runs the
+installed `joggle` command -- the wrapper that supplies the model key from the
+environment, `.env.local`, `.env`, or doppler. Install it once:
 
 ```sh
-JOGGLE_ENTRY=/path/to/joggle/src/main.ts pnpm joggle
+ln -sf /path/to/joggle/scripts/joggle.sh ~/.local/bin/joggle
 ```
 
 That script names a path outside this repository, so it is a local-only

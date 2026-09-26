@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { runBackground, runSync, scriptArguments, type RunRequest } from "../extensions/package-scripts/exec.ts";
-import { durationText } from "../extensions/package-scripts/text.ts";
+import { durationText, shorten } from "../extensions/package-scripts/text.ts";
 import { statSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
@@ -46,6 +46,25 @@ describe("durationText", () => {
 
 	it("reads a long run in seconds", () => {
 		expect(durationText(12_340)).toBe("12.3s");
+	});
+});
+
+describe("shorten", () => {
+	it("leaves a string under the limit alone", () => {
+		expect(shorten("pnpm build", 40)).toBe("pnpm build");
+	});
+
+	/**
+	 * The two ends of a command are the parts a reader decides with. Cutting only
+	 * the tail hides the environment or the target a dangerous script names.
+	 */
+	it("keeps both ends and says how much went", () => {
+		const command = `docker run ${"x".repeat(200)} DOPPLER_CONFIG=dev_simulate`;
+		const cut = shorten(command, 90);
+		expect(cut.startsWith("docker run ")).toBe(true);
+		expect(cut.endsWith(command.slice(-20))).toBe(true);
+		expect(cut).toMatch(/characters\]/u);
+		expect(cut.length).toBeLessThanOrEqual(90);
 	});
 });
 

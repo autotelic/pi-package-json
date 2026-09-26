@@ -27,8 +27,39 @@ const LOCKFILES: ReadonlyArray<readonly [string, PackageManager]> = [
 	["npm-shrinkwrap.json", "npm"],
 ];
 
-/** A dollar sign, an optional brace, and the name a script reads. */
+/** A dollar sign, an optional brace, and the name a script refers to. */
 const ENVIRONMENT_REFERENCE = /\$\{?([A-Za-z_][A-Za-z0-9_]*)/g;
+
+/** The name a command writes for itself: an assignment, at the start of a word. */
+const ASSIGNMENT = /(?:^|[\s;&|()"'`])([A-Za-z_][A-Za-z0-9_]*)\s*(?::=|=)(?!=)/g;
+
+/** The variable of a shell loop, which the command also writes for itself. */
+const LOOP_VARIABLE = /\bfor\s+([A-Za-z_][A-Za-z0-9_]*)\s+in\b/g;
+
+/**
+ * The names a command assigns for itself.
+ *
+ * A shell script reads a positional argument, a loop variable and a local the
+ * same way it reads the environment, and no name alone can tell them apart. What
+ * can be told is which names the command itself writes. A name on the left of an
+ * assignment and the variable of a `for ... in` are the command's own, and a
+ * caller who sets one in the environment is setting something the script
+ * overwrites.
+ *
+ * The real case: `sh -c 'tenant=$1; for cmd in ...; do ... $tenant; done' --`
+ * declares both names itself, and a hint that they come from the environment
+ * sends the caller to `env` for a value the script will throw away.
+ */
+const assignedNames = (command: string): ReadonlySet<string> => {
+	const names = new Set<string>();
+	for (const pattern of [ASSIGNMENT, LOOP_VARIABLE]) {
+		for (const match of command.matchAll(pattern)) {
+			const name = match[1];
+			if (name !== undefined) names.add(name);
+		}
+	}
+	return names;
+};
 
 /** A domain name out of a package-manager declaration, with its version dropped. */
 export const parseManagerField = (declared: string | undefined): PackageManager | undefined => {
@@ -37,12 +68,19 @@ export const parseManagerField = (declared: string | undefined): PackageManager 
 	return name === "pnpm" || name === "npm" || name === "yarn" || name === "bun" ? name : undefined;
 };
 
-/** The names one command reads from the environment, in first-seen order. */
+/**
+ * The names one command refers to and does not assign, in first-seen order.
+ *
+ * The list is an upper bound, and the description says so: a scanner reading a
+ * shell string cannot prove that a name comes from the environment rather than
+ * from an argument the wrapper supplies.
+ */
 export const environmentNames = (command: string): ReadonlyArray<string> => {
+	const assigned = assignedNames(command);
 	const names = new Set<string>();
 	for (const match of command.matchAll(ENVIRONMENT_REFERENCE)) {
 		const name = match[1];
-		if (name !== undefined) names.add(name);
+		if (name !== undefined && !assigned.has(name)) names.add(name);
 	}
 	return [...names];
 };
@@ -76,6 +114,7 @@ export const detectManager = (root: string, override: PackageManager | undefined
 /** The note the configuration gives one script, if any pattern matches it. */
 const noteFor = (name: string, notes: Readonly<Record<string, string>>): string | undefined => {
 	for (const [pattern, note] of Object.entries(notes)) {
+		if (note === "") continue;
 		if (matchesPattern({ pattern, name })) return note;
 	}
 	return undefined;

@@ -20,7 +20,7 @@
   "pi": {
     "extensions": ["./extensions/package-scripts/index.ts"]
   },
-  "files": ["extensions", "README.md"],
+  "files": ["extensions", "docs", "README.md", "LICENSE"],
   "scripts": {
     "lint": "oxlint .",
     "lint:fix": "oxlint --fix .",

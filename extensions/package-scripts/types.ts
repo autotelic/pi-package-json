@@ -69,6 +69,17 @@ export interface Discovery {
 	readonly problems: ReadonlyArray<string>;
 }
 
+/** What one scan of the launch directory produced. */
+export interface Scan {
+	readonly root: string;
+	readonly discovery: Discovery;
+	readonly tools: ReadonlyArray<PlannedTool>;
+	/** Scripts the tool cap left out. Reported, never dropped quietly. */
+	readonly dropped: number;
+	/** Everything that went wrong in this scan, in the order it was found. */
+	readonly problems: ReadonlyArray<string>;
+}
+
 /** One script bound to one tool name. */
 export interface PlannedTool {
 	readonly name: string;

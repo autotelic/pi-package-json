@@ -23,7 +23,8 @@
           "extensions/package-scripts/text.ts",
           "extensions/package-scripts/clock.ts",
           "extensions/package-scripts/schema.ts",
-          "extensions/package-scripts/details.ts"
+          "extensions/package-scripts/details.ts",
+          "extensions/package-scripts/revision.ts"
         ]
       },
       {
@@ -39,7 +40,9 @@
         "name": "engine",
         "include": [
           "extensions/package-scripts/discover.ts",
-          "extensions/package-scripts/exec.ts"
+          "extensions/package-scripts/exec.ts",
+          "extensions/package-scripts/tool.ts",
+          "extensions/package-scripts/report.ts"
         ]
       },
       {

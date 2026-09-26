@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { starterConfig } from "../extensions/package-scripts/index.ts";
+import { starterConfig } from "../extensions/package-scripts/report.ts";
 import type { PlannedTool, ScriptEntry } from "../extensions/package-scripts/types.ts";
 
 /** One tool for a named script, so the starter config can be built from them. */

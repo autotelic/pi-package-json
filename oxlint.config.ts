@@ -89,13 +89,16 @@ export default {
 			/**
 			 * `no-sql-string-interpolation` matches the SQL keywords SELECT, FROM,
 			 * UPDATE, DELETE and JOIN as whole words in the raw text of a template
-			 * literal. Two strings in this file are English sentences that use the
-			 * word "from" -- "the script of X, from that directory" and "reads FILE
-			 * out of the environment" -- and this extension contains no SQL at all.
+			 * literal. Two strings in these files are English sentences that use the
+			 * word "from" -- "the script of X, from that directory" and "may come
+			 * from the environment" -- and this extension contains no SQL at all.
 			 * Declared rather than reworded: editing a tool's description in order
 			 * to satisfy a keyword list is the tool writing the documentation.
 			 */
-			files: ["extensions/package-scripts/index.ts"],
+			files: [
+				"extensions/package-scripts/index.ts",
+				"extensions/package-scripts/tool.ts",
+			],
 			rules: { "plumb/no-sql-string-interpolation": "off" },
 		},
 	],

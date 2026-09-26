@@ -23,6 +23,15 @@ export const clamp = (value: string, limit: number): Clamped => {
 	};
 };
 
+/**
+ * A duration for a reader, to one decimal place.
+ *
+ * Rounded to whole seconds, a 400ms timeout prints as "0s", which reads as a
+ * bug in the tool rather than as a very short timeout.
+ */
+export const durationText = (milliseconds: number): string =>
+	`${(milliseconds / 1_000).toFixed(1)}s`;
+
 /** Shorten a string to one line of at most `limit` characters. */
 export const shorten = (value: string, limit: number): string =>
 	value.length <= limit ? value : `${value.slice(0, limit - 1)}…`;

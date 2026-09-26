@@ -50,11 +50,17 @@ import type {
 import { Type } from "typebox";
 import { loadConfig, matchesPattern, type ScriptsConfig } from "./config.ts";
 import { delegationTarget } from "./delegate.ts";
-import { detailsOf, scriptFailed, type ScriptDetails, type ScriptFacts } from "./details.ts";
+import {
+	detailsOf,
+	scriptFailed,
+	type ScriptDetails,
+	type ScriptExit,
+	type ScriptFacts,
+} from "./details.ts";
 import { discover } from "./discover.ts";
 import { runBackground, runSync, scriptArguments, type RunOutcome } from "./exec.ts";
 import { planTools, uniqueLabels } from "./naming.ts";
-import { clamp, errorText, shorten } from "./text.ts";
+import { clamp, durationText, errorText, shorten } from "./text.ts";
 import type { Discovery, PlannedTool } from "./types.ts";
 
 /** The largest timeout a caller may ask for, whatever the configuration says. */
@@ -95,6 +101,12 @@ const parametersOf = (config: ScriptsConfig) =>
 			Type.Boolean({
 				description:
 					"Start the script detached and return at once with a pid and a log path. Use it for servers and watchers, which do not exit.",
+			}),
+		),
+		settle: Type.Optional(
+			Type.Boolean({
+				description:
+					"Report a non-zero exit as a result rather than as a failed call. Use it when the exit code IS the answer you are reading, such as a coverage gate or a format check.",
 			}),
 		),
 	});
@@ -180,17 +192,24 @@ const describeOutcome = (
 ): string => {
 	const stdout = clamp(outcome.stdout.trimEnd(), STDOUT_LIMIT);
 	const stderr = clamp(outcome.stderr.trimEnd(), STDERR_LIMIT);
-	const seconds = (outcome.durationMs / 1_000).toFixed(1);
 	const lines = [
-		`${tool.pkg.manager} run ${tool.script.name} in ${tool.pkg.rel} -> exit ${outcome.code} in ${seconds}s`,
+		`${tool.pkg.manager} run ${tool.script.name} in ${tool.pkg.rel} -> exit ${outcome.code} in ${durationText(outcome.durationMs)}`,
 	];
 	if (outcome.timedOut) {
-		lines.push(`The script did not finish in ${Math.round(timeoutMs / 1_000)}s and was killed.`);
+		lines.push(`The script did not finish in ${durationText(timeoutMs)} and was killed.`);
 	}
 	if (stdout.text !== "") lines.push("", stdout.text);
 	if (stderr.text !== "") lines.push("", "stderr:", stderr.text);
+	/**
+	 * The log path is the caller's only way to the rest of the output. A failed
+	 * or killed run needs it as much as a cut one does: a host that turns a
+	 * failed call into a thrown error keeps the message and drops the details,
+	 * so the path has to be in the message.
+	 */
 	if (stdout.truncated || stderr.truncated) {
 		lines.push("", `The output was cut. The complete output is at ${logFile}.`);
+	} else if (outcome.code !== 0 || outcome.timedOut) {
+		lines.push("", `The complete output is at ${logFile}.`);
 	}
 	return lines.join("\n");
 };
@@ -261,11 +280,15 @@ const buildTool = (
 			);
 		}
 
-		return answered(describeOutcome(tool, outcome, request.timeoutMs, logFile), {
-			...facts,
+		const exit: ScriptExit = {
 			outcome: "exited",
 			exitCode: outcome.code,
 			durationMs: outcome.durationMs,
+			settled: params.settle ?? false,
+		};
+		return answered(describeOutcome(tool, outcome, request.timeoutMs, logFile), {
+			...facts,
+			...exit,
 		});
 	},
 });

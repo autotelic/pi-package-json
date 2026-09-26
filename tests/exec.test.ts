@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { runBackground, runSync, scriptArguments, type RunRequest } from "../extensions/package-scripts/exec.ts";
+import { durationText } from "../extensions/package-scripts/text.ts";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 
@@ -34,6 +35,16 @@ describe("scriptArguments", () => {
 	it("omits the separator when there are no extra arguments", () => {
 		expect(scriptArguments("npm", "show", [])).toEqual(["run", "show"]);
 		expect(scriptArguments("npm", "show", undefined)).toEqual(["run", "show"]);
+	});
+});
+
+describe("durationText", () => {
+	it("keeps a fraction of a second visible", () => {
+		expect(durationText(400)).toBe("0.4s");
+	});
+
+	it("reads a long run in seconds", () => {
+		expect(durationText(12_340)).toBe("12.3s");
 	});
 });
 

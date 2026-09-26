@@ -22,13 +22,25 @@ const resultEvent = <T>(details: T): ToolResultEvent => ({
 	details,
 });
 
+const exited = (exitCode: number, settled: boolean): ScriptDetails => ({
+	...facts,
+	outcome: "exited",
+	exitCode,
+	durationMs: 12,
+	settled,
+});
+
 describe("scriptFailed", () => {
 	it("passes a zero exit", () => {
-		expect(scriptFailed({ ...facts, outcome: "exited", exitCode: 0, durationMs: 12 })).toBe(false);
+		expect(scriptFailed(exited(0, false))).toBe(false);
 	});
 
-	it("fails a non-zero exit, which is an answer and not a defect", () => {
-		expect(scriptFailed({ ...facts, outcome: "exited", exitCode: 3, durationMs: 12 })).toBe(true);
+	it("fails a non-zero exit", () => {
+		expect(scriptFailed(exited(3, false))).toBe(true);
+	});
+
+	it("passes a non-zero exit the caller asked to read", () => {
+		expect(scriptFailed(exited(3, true))).toBe(false);
 	});
 
 	it("fails a script that could not start", () => {
@@ -44,8 +56,18 @@ describe("scriptFailed", () => {
 
 describe("detailsOf", () => {
 	it("reads back the details this extension published", () => {
-		const details = { ...facts, outcome: "exited", exitCode: 0, durationMs: 12 } satisfies ScriptDetails;
+		const details = exited(0, false);
 		expect(detailsOf(resultEvent(details))).toEqual(details);
+	});
+
+	it("ignores an exit outcome that omits the settled flag", () => {
+		const incomplete = {
+			...facts,
+			outcome: "exited",
+			exitCode: 0,
+			durationMs: 12,
+		};
+		expect(detailsOf(resultEvent(incomplete))).toBeUndefined();
 	});
 
 	it("ignores the details of another tool", () => {

@@ -32,19 +32,23 @@ export type ScriptFacts = Static<typeof ScriptFacts>;
  * `outcome` is a discriminant rather than a set of sibling flags, so a reader
  * cannot reach for an exit code that a detached run never had.
  */
+export const ScriptExit = Type.Object({
+	outcome: Type.Literal("exited"),
+	exitCode: Type.Number(),
+	durationMs: Type.Number(),
+	/** Whether the caller asked for the exit code instead of a failed call. */
+	settled: Type.Boolean(),
+});
+
+/** A script that ran to completion. */
+export type ScriptExit = Static<typeof ScriptExit>;
+
 export const ScriptDetails = Type.Union([
 	Type.Intersect([
 		ScriptFacts,
 		Type.Object({ outcome: Type.Literal("started"), pid: Type.Number() }),
 	]),
-	Type.Intersect([
-		ScriptFacts,
-		Type.Object({
-			outcome: Type.Literal("exited"),
-			exitCode: Type.Number(),
-			durationMs: Type.Number(),
-		}),
-	]),
+	Type.Intersect([ScriptFacts, ScriptExit]),
 	Type.Intersect([
 		ScriptFacts,
 		Type.Object({ outcome: Type.Literal("unavailable"), reason: Type.String() }),
@@ -70,6 +74,12 @@ export const detailsOf = (event: ToolResultEvent): ScriptDetails | undefined => 
  *
  * A script that exits non-zero is a failed tool call, and a script that could
  * not start is too. A detached run has not failed yet -- it has only started.
+ *
+ * `settled` overrides the non-zero case, because a caller that asked to READ
+ * the exit code is not looking at a failure: a coverage gate, a lint gate and a
+ * format check all answer with a non-zero exit, and a program that wants to
+ * branch on that should not have to catch an exception and parse prose to find
+ * out what the answer was.
  */
 export const scriptFailed = (details: ScriptDetails): boolean => {
 	switch (details.outcome) {
@@ -78,6 +88,6 @@ export const scriptFailed = (details: ScriptDetails): boolean => {
 		case "unavailable":
 			return true;
 		case "exited":
-			return details.exitCode !== 0;
+			return !details.settled && details.exitCode !== 0;
 	}
 };

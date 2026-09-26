@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { runBackground, runSync, scriptArguments, type RunRequest } from "../extensions/package-scripts/exec.ts";
 import { durationText } from "../extensions/package-scripts/text.ts";
+import { statSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 
@@ -82,6 +83,44 @@ describe("runSync", () => {
 
 	it("rejects when the command does not exist", async () => {
 		await expect(runSync(request({ command: "pi-package-json-no-such-command" }))).rejects.toThrow();
+	});
+});
+
+describe("stopping a script", () => {
+	it("asks the script to stop before killing it", async () => {
+		const outcome = await runSync(
+			request({
+				args: [
+					"-e",
+					"process.on('SIGTERM', () => { console.log('GOT_SIGTERM'); process.exit(0) }); setTimeout(() => {}, 60_000)",
+				],
+				timeoutMs: 800,
+				logFile: join(tmpdir(), "pi-package-json-tests", "stop.log"),
+			}),
+		);
+		expect(outcome.timedOut).toBe(true);
+		expect(outcome.stdout).toContain("GOT_SIGTERM");
+	});
+
+	it("refuses to start when the caller has already aborted", async () => {
+		const controller = new AbortController();
+		controller.abort();
+		await expect(runSync(request({ signal: controller.signal }))).rejects.toThrow();
+	});
+});
+
+describe("the log", () => {
+	it("holds the whole output, past what the result keeps in memory", async () => {
+		const log = join(tmpdir(), "pi-package-json-tests", "large.log");
+		const outcome = await runSync(
+			request({
+				args: ["-e", "process.stdout.write('x'.repeat(9 * 1024 * 1024))"],
+				timeoutMs: 60_000,
+				logFile: log,
+			}),
+		);
+		expect(outcome.stdout.length).toBeLessThanOrEqual(8 * 1024 * 1024);
+		expect(statSync(log).size).toBeGreaterThan(8 * 1024 * 1024);
 	});
 });
 

@@ -124,6 +124,8 @@ interface SessionState {
 	readonly config: ScriptsConfig;
 	/** Scripts the tool cap left out. Reported, never dropped quietly. */
 	readonly dropped: number;
+	/** Everything that went wrong in this scan, in the order it was found. */
+	readonly problems: ReadonlyArray<string>;
 }
 
 /**
@@ -143,21 +145,26 @@ const answered = (text: string, details: ScriptDetails): AgentToolResult<ScriptD
 const sourceDirectory = (): string => dirname(fileURLToPath(import.meta.url));
 
 /**
- * The newest modification time among this extension's own source files.
+ * The newest modification time among this extension's own files, at any depth.
  *
  * A session loads an extension at `session_start` and keeps it. `pi update`
  * replaces the checkout on disk, and the running session goes on calling the
  * code it loaded. That is how a review can name a revision and still describe
  * defects that revision had already fixed, so `/packages` says which copy it is
  * running and whether the copy on disk has moved on.
+ *
+ * A hint rather than a proof: it reads modification times, so a checkout that
+ * reproduces them hides nothing but reports nothing either, and it cannot say
+ * which revision is on disk. It answers the one question a session has -- has
+ * the code moved since I loaded it.
  */
 const sourceStamp = (): number => {
 	const directory = sourceDirectory();
 	let newest = 0;
 	try {
-		for (const entry of readdirSync(directory)) {
-			if (!entry.endsWith(".ts")) continue;
-			const stamp = statSync(join(directory, entry)).mtimeMs;
+		for (const entry of readdirSync(directory, { withFileTypes: true, recursive: true })) {
+			if (!entry.isFile()) continue;
+			const stamp = statSync(join(entry.parentPath, entry.name)).mtimeMs;
 			if (stamp > newest) newest = stamp;
 		}
 	} catch {
@@ -263,7 +270,7 @@ const describeOutcome = (
 const buildTool = (
 	tool: PlannedTool,
 	config: ScriptsConfig,
-	logs: string,
+	nextLog: (toolName: string) => string,
 	parameters: ScriptParameters,
 ): ToolDefinition<ScriptParameters, ScriptDetails> => ({
 	name: tool.name,
@@ -272,7 +279,7 @@ const buildTool = (
 	promptSnippet: `Run the "${tool.script.name}" script in ${placeOf(tool)}`,
 	parameters,
 	async execute(_toolCallId, params, signal): Promise<AgentToolResult<ScriptDetails>> {
-		const logFile = join(logs, `${tool.name}.log`);
+		const logFile = nextLog(tool.name);
 		const facts: ScriptFacts = {
 			tool: tool.name,
 			package: tool.pkg.rel,
@@ -382,9 +389,17 @@ const reportOf = (state: SessionState, wanted: string, drifted: boolean): string
 	return lines.join("\n");
 };
 
-/** The whole report, with the running revision last so a reviewer can name it. */
-const fullReport = (state: SessionState, wanted: string, loadedAt: number): string =>
-	`${reportOf(state, wanted, sourceStamp() > loadedAt)}\n\n${identity()}`;
+/** The report, with what went wrong and which revision is running. */
+const fullReport = (state: SessionState, wanted: string, loadedAt: number): string => {
+	const body = reportOf(state, wanted, sourceStamp() > loadedAt);
+	const lines = [body];
+	if (state.problems.length > 0) {
+		lines.push("", `${numberOf(state.problems.length, "problem")}:`);
+		for (const problem of state.problems) lines.push(`  ${problem}`);
+	}
+	lines.push("", identity());
+	return lines.join("\n");
+};
 
 /**
  * Register this repository's package.json scripts as pi tools.
@@ -405,8 +420,10 @@ export default function packageScripts(pi: ExtensionAPI): void {
 	 * aside for a name it had already claimed.
 	 */
 	const load = (cwd: string): SessionState => {
-		const config = loadConfig(cwd);
+		const problems: string[] = [];
+		const config = loadConfig(cwd, problems);
 		const discovery = discover(cwd, config);
+		problems.push(...discovery.problems);
 		const taken = new Set(
 			pi
 				.getAllTools()
@@ -417,7 +434,13 @@ export default function packageScripts(pi: ExtensionAPI): void {
 		const tools = planned.slice(0, config.maxTools);
 		const logs = logDirectory(discovery.root);
 		const parameters = parametersOf(config);
-		for (const tool of tools) pi.registerTool(buildTool(tool, config, logs, parameters));
+		let invocation = 0;
+		/** A log path no other call of this session shares. */
+		const nextLog = (toolName: string): string => {
+			invocation += 1;
+			return join(logs, `${toolName}-${invocation}.log`);
+		};
+		for (const tool of tools) pi.registerTool(buildTool(tool, config, nextLog, parameters));
 		registered = new Set(tools.map((tool) => tool.name));
 		state = {
 			root: discovery.root,
@@ -425,6 +448,7 @@ export default function packageScripts(pi: ExtensionAPI): void {
 			tools,
 			config,
 			dropped: planned.length - tools.length,
+			problems,
 		};
 		return state;
 	};
@@ -432,8 +456,8 @@ export default function packageScripts(pi: ExtensionAPI): void {
 	const announce = (ctx: ExtensionContext, loaded: SessionState): void => {
 		if (!ctx.hasUI) return;
 		ctx.ui.setStatus("package-scripts", numberOf(loaded.tools.length, "script"));
-		if (loaded.discovery.problems.length > 0) {
-			ctx.ui.notify(`package.json scan: ${loaded.discovery.problems[0] ?? ""}`, "warning");
+		if (loaded.problems.length > 0) {
+			ctx.ui.notify(`package.json scan: ${loaded.problems[0] ?? ""}`, "warning");
 		}
 		if (loaded.dropped > 0) {
 			ctx.ui.notify(

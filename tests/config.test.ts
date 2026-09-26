@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { loadConfig, matchesPattern, BUILT_IN_SKIP_DIRS } from "../extensions/package-scripts/config.ts";
+import {
+	loadConfig,
+	matchesPattern,
+	BUILT_IN_SKIP_DIRS,
+} from "../extensions/package-scripts/config.ts";
 import { json, workspace } from "./support.ts";
 
 /** Ask the pattern question the way a caller does. */
@@ -21,6 +25,16 @@ describe("matchesPattern", () => {
 		expect(matches("test:*:coverage", "test:math")).toBe(false);
 	});
 
+	/**
+	 * A star stands for characters and nothing else. It does not stand for a
+	 * separator, and it does not make a colon optional, so a pattern written for
+	 * `test:watch` does not reach a script simply called `watch`.
+	 */
+	it("does not make a separator optional", () => {
+		expect(matches("*:watch", "watch")).toBe(false);
+		expect(matches("*:watch", "test:watch")).toBe(true);
+	});
+
 	it("does not let a star cross the end of the name", () => {
 		expect(matches("*build", "build:watch")).toBe(false);
 	});
@@ -34,7 +48,7 @@ describe("matchesPattern", () => {
 describe("loadConfig", () => {
 	it("uses the built-in defaults when no file exists", () => {
 		const root = workspace({ "package.json": "{}" });
-		const loaded = loadConfig(root);
+		const loaded = loadConfig(root, []);
 		expect(loaded.maxDepth).toBe(8);
 		expect(loaded.timeoutSeconds).toBe(300);
 		expect(loaded.skipDirs).toEqual([]);
@@ -45,7 +59,7 @@ describe("loadConfig", () => {
 		const root = workspace({
 			"package-scripts.json": json({ excludeScripts: ["watch"], manager: "pnpm" }),
 		});
-		const loaded = loadConfig(root);
+		const loaded = loadConfig(root, []);
 		expect(loaded.excludeScripts).toEqual(["watch"]);
 		expect(loaded.managerOverride).toBe("pnpm");
 	});
@@ -55,19 +69,9 @@ describe("loadConfig", () => {
 			"package-scripts.json": json({ excludeScripts: ["watch"], maxDepth: 3 }),
 			".pi/package-scripts.json": json({ maxDepth: 5 }),
 		});
-		const loaded = loadConfig(root);
+		const loaded = loadConfig(root, []);
 		expect(loaded.excludeScripts).toEqual(["watch"]);
 		expect(loaded.maxDepth).toBe(5);
-	});
-
-	it("ignores a value of the wrong shape", () => {
-		const root = workspace({
-			"package-scripts.json": json({ excludeScripts: "watch", maxDepth: 0, manager: "cargo" }),
-		});
-		const loaded = loadConfig(root);
-		expect(loaded.excludeScripts).toEqual([]);
-		expect(loaded.maxDepth).toBe(8);
-		expect(loaded.managerOverride).toBeUndefined();
 	});
 
 	it("reads notes and background scripts", () => {
@@ -77,14 +81,47 @@ describe("loadConfig", () => {
 				backgroundScripts: ["dev"],
 			}),
 		});
-		const loaded = loadConfig(root);
+		const loaded = loadConfig(root, []);
 		expect(loaded.notes).toEqual({ "db:*": "connects to the database" });
 		expect(loaded.backgroundScripts).toEqual(["dev"]);
 	});
 
-	it("ignores a malformed file", () => {
+	it("ignores a value of the wrong shape, and says so", () => {
+		const root = workspace({
+			"package-scripts.json": json({ excludeScripts: "watch", maxDepth: 0, manager: "cargo" }),
+		});
+		const problems: string[] = [];
+		const loaded = loadConfig(root, problems);
+		expect(loaded.excludeScripts).toEqual([]);
+		expect(loaded.maxDepth).toBe(8);
+		expect(loaded.managerOverride).toBeUndefined();
+		expect(problems).toHaveLength(1);
+		expect(problems[0]).toContain("package-scripts.json");
+	});
+
+	it("names an unknown setting and keeps the rest of the file", () => {
+		const root = workspace({
+			"package-scripts.json": json({ excludeScript: ["watch"], maxDepth: 4 }),
+		});
+		const problems: string[] = [];
+		const loaded = loadConfig(root, problems);
+		expect(loaded.maxDepth).toBe(4);
+		expect(problems).toHaveLength(1);
+		expect(problems[0]).toContain("does not know");
+	});
+
+	it("reports a malformed file", () => {
 		const root = workspace({ "package-scripts.json": "{ not json" });
-		expect(loadConfig(root).maxDepth).toBe(8);
+		const problems: string[] = [];
+		expect(loadConfig(root, problems).maxDepth).toBe(8);
+		expect(problems).toHaveLength(1);
+	});
+
+	it("says nothing about a file that is not there", () => {
+		const root = workspace({ "package.json": "{}" });
+		const problems: string[] = [];
+		loadConfig(root, problems);
+		expect(problems).toEqual([]);
 	});
 });
 
@@ -101,28 +138,30 @@ describe("BUILT_IN_SKIP_DIRS", () => {
 describe("respectGitignore", () => {
 	it("is on by default", () => {
 		const root = workspace({ "package.json": "{}" });
-		expect(loadConfig(root).respectGitignore).toBe(true);
+		expect(loadConfig(root, []).respectGitignore).toBe(true);
 	});
 
 	it("can be turned off", () => {
 		const root = workspace({ "package-scripts.json": json({ respectGitignore: false }) });
-		expect(loadConfig(root).respectGitignore).toBe(false);
+		expect(loadConfig(root, []).respectGitignore).toBe(false);
 	});
 });
 
 describe("maxTools", () => {
 	it("defaults to a bounded surface", () => {
 		const root = workspace({ "package.json": "{}" });
-		expect(loadConfig(root).maxTools).toBe(500);
+		expect(loadConfig(root, []).maxTools).toBe(500);
 	});
 
 	it("is read from the file", () => {
 		const root = workspace({ "package-scripts.json": json({ maxTools: 12 }) });
-		expect(loadConfig(root).maxTools).toBe(12);
+		expect(loadConfig(root, []).maxTools).toBe(12);
 	});
 
-	it("ignores a value out of range", () => {
+	it("ignores a value out of range, and says so", () => {
 		const root = workspace({ "package-scripts.json": json({ maxTools: 0 }) });
-		expect(loadConfig(root).maxTools).toBe(500);
+		const problems: string[] = [];
+		expect(loadConfig(root, problems).maxTools).toBe(500);
+		expect(problems).toHaveLength(1);
 	});
 });

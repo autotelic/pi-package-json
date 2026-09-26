@@ -14,7 +14,7 @@ import { workspace } from "./support.ts";
 const rules = (text: string): ReadonlyArray<IgnoreRule> =>
 	text
 		.split("\n")
-		.map((line) => compileIgnoreLine({ line, base: "" }))
+		.map((line) => compileIgnoreLine({ line, base: "", prefix: "" }))
 		.filter((rule): rule is IgnoreRule => rule !== undefined);
 
 const ignored = (text: string, path: string, directory = true): boolean =>
@@ -22,9 +22,9 @@ const ignored = (text: string, path: string, directory = true): boolean =>
 
 describe("compileIgnoreLine", () => {
 	it("declares nothing for a blank line or a comment", () => {
-		expect(compileIgnoreLine({ line: "", base: "" })).toBeUndefined();
-		expect(compileIgnoreLine({ line: "   ", base: "" })).toBeUndefined();
-		expect(compileIgnoreLine({ line: "# a note", base: "" })).toBeUndefined();
+		expect(compileIgnoreLine({ line: "", base: "", prefix: "" })).toBeUndefined();
+		expect(compileIgnoreLine({ line: "   ", base: "", prefix: "" })).toBeUndefined();
+		expect(compileIgnoreLine({ line: "# a note", base: "", prefix: "" })).toBeUndefined();
 	});
 });
 
@@ -91,12 +91,55 @@ describe("isIgnored", () => {
 const nestedRules = (text: string, base: string): ReadonlyArray<IgnoreRule> =>
 	text
 		.split("\n")
-		.map((line) => compileIgnoreLine({ line, base }))
+		.map((line) => compileIgnoreLine({ line, base, prefix: "" }))
 		.filter((rule): rule is IgnoreRule => rule !== undefined);
+
+describe("escapes", () => {
+	it("treats an escaped hash as a name rather than a comment", () => {
+		expect(rules("\\#file")).toHaveLength(1);
+		expect(ignored("\\#file", "#file")).toBe(true);
+		expect(ignored("\\#file", "other")).toBe(false);
+	});
+
+	it("does not read an escaped bang as a negation", () => {
+		expect(ignored("\\!name", "!name")).toBe(true);
+	});
+
+	it("treats an escaped space as a space", () => {
+		expect(ignored("a\\ b", "a b")).toBe(true);
+	});
+
+	it("treats an escaped star as a star", () => {
+		expect(ignored("a\\*b", "a*b")).toBe(true);
+		expect(ignored("a\\*b", "axb")).toBe(false);
+	});
+});
+
+describe("a rule declared above the scan root", () => {
+	/** A rule from an ancestor, which sees the path with the scan root's name in front. */
+	const above = (text: string, prefix: string): ReadonlyArray<IgnoreRule> =>
+		text
+			.split("\n")
+			.map((line) => compileIgnoreLine({ line, base: "", prefix }))
+			.filter((rule): rule is IgnoreRule => rule !== undefined);
+
+	it("sees the path as the repository sees it", () => {
+		expect(isIgnored(above("sub/dist", "sub"), "dist", true)).toBe(true);
+		expect(isIgnored(above("sub/dist", "sub"), "other", true)).toBe(false);
+	});
+
+	it("still matches an unanchored name anywhere below", () => {
+		expect(isIgnored(above("dist", "sub"), "dist", true)).toBe(true);
+	});
+
+	it("does not reach a directory the ancestor does not name", () => {
+		expect(isIgnored(above("other/dist", "sub"), "dist", true)).toBe(false);
+	});
+});
 
 describe("readIgnoreFile", () => {
 	it("declares nothing when the file is absent", () => {
-		expect(readIgnoreFile({ path: "/no/such/.gitignore", base: "" })).toEqual([]);
+		expect(readIgnoreFile({ path: "/no/such/.gitignore", base: "", prefix: "" })).toEqual([]);
 	});
 });
 
@@ -141,6 +184,32 @@ describe("agreement with git check-ignore", () => {
 		["src/index.ts", false],
 		["README.md", false],
 	];
+
+	it("agrees with git about escapes too", () => {
+		const text = ["\\#file", "a\\ b", "\\!name"].join("\n");
+		const cases = ["#file", "a b", "!name"];
+		const root = workspace({ ".gitignore": text });
+		for (const path of cases) mkdirSync(join(root, path), { recursive: true });
+		execFileSync("git", ["init", "--quiet"], { cwd: root, stdio: "pipe" });
+
+		const disagreements: string[] = [];
+		for (const path of cases) {
+			let gitSays: boolean;
+			try {
+				execFileSync(
+					"git",
+					["-c", "core.excludesFile=/dev/null", "check-ignore", "--no-index", "--quiet", "--", path],
+					{ cwd: root, stdio: "pipe" },
+				);
+				gitSays = true;
+			} catch {
+				gitSays = false;
+			}
+			const mine = ignored(text, path, true);
+			if (mine !== gitSays) disagreements.push(path + ": mine=" + String(mine) + " git=" + String(gitSays));
+		}
+		expect(disagreements).toEqual([]);
+	});
 
 	it("answers the same as git for every case", () => {
 		const root = workspace({ ".gitignore": IGNORE_TEXT });

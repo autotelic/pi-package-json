@@ -1,7 +1,12 @@
 import { existsSync, readdirSync, type Dirent } from "node:fs";
-import { join, relative, resolve, sep } from "node:path";
+import { basename, dirname, join, relative, resolve, sep } from "node:path";
 import { BUILT_IN_SKIP_DIRS, matchesPattern, type ScriptsConfig } from "./config.ts";
-import { isIgnored, readIgnoreFile, type IgnoreRule } from "./ignore.ts";
+import {
+	ancestorIgnores,
+	isIgnored,
+	readIgnoreFile,
+	type IgnoreRule,
+} from "./ignore.ts";
 import { Manifest, readJson, type Manifest as ManifestValue } from "./schema.ts";
 import { errorText } from "./text.ts";
 import type {
@@ -138,6 +143,40 @@ const portable = (subject: RelativePath): string => {
 	return relativePath === "" ? "." : relativePath.split(sep).join("/");
 };
 
+/** The nearest directory at or above the scan root that holds a repository. */
+const repositoryRoot = (root: string): string | undefined => {
+	let directory = root;
+	for (;;) {
+		if (existsSync(join(directory, ".git"))) return directory;
+		const parent = dirname(directory);
+		if (parent === directory) return undefined;
+		directory = parent;
+	}
+};
+
+/** The scan root, and the repository root the walk must not pass. */
+interface ParentWalk {
+	readonly root: string;
+	readonly stop: string;
+}
+
+/**
+ * The directories between the scan root and the repository root, outermost
+ * first, each with the name the scan root has from there.
+ */
+const parentsOf = (subject: ParentWalk): ReadonlyArray<RelativePath> => {
+	const found: Array<RelativePath> = [];
+	let directory = dirname(subject.root);
+	let prefix = basename(subject.root);
+	while (directory !== dirname(directory)) {
+		found.push({ base: directory, path: prefix });
+		if (directory === subject.stop) break;
+		prefix = `${basename(directory)}/${prefix}`;
+		directory = dirname(directory);
+	}
+	return found.reverse();
+};
+
 /**
  * Scan a launch directory for package.json files and their scripts.
  *
@@ -154,6 +193,10 @@ const portable = (subject: RelativePath): string => {
  *
  * An ignored directory is pruned, never entered. That is what git does, and for
  * the same reason: git will not re-include a path whose parent is excluded.
+ *
+ * A manifest that an ignore file excludes is not read either, and it is
+ * reported rather than passed over in silence, because a package that is
+ * missing from the tool list has to be explainable.
  */
 export const discover = (root: string, config: ScriptsConfig): Discovery => {
 	const absoluteRoot = resolve(root);
@@ -162,22 +205,45 @@ export const discover = (root: string, config: ScriptsConfig): Discovery => {
 	const packages: DiscoveredPackage[] = [];
 	const rootManager = detectManager(absoluteRoot, config.managerOverride);
 	const excluded = new Set([...BUILT_IN_SKIP_DIRS, ...config.skipDirs]);
-	const inherited = readIgnoreFile({
-		path: join(absoluteRoot, ".git", "info", "exclude"),
-		base: "",
-	});
+	/**
+	 * The rules that reach the scan root from above it.
+	 *
+	 * Without a repository above the scan root there is nothing to read, and
+	 * nothing is guessed: a stray ignore file in a home directory or a shared
+	 * workspace must not decide what a repository contains.
+	 */
+	const gitRoot = repositoryRoot(absoluteRoot);
+	const inherited = ancestorIgnores(
+		absoluteRoot,
+		gitRoot === undefined ? [] : parentsOf({ root: absoluteRoot, stop: gitRoot }),
+		gitRoot,
+	);
 
 	const visit = (directory: string, depth: number, rules: ReadonlyArray<IgnoreRule>): void => {
 		const here = portable({ base: absoluteRoot, path: directory });
 		const declared = readIgnoreFile({
 			path: join(directory, ".gitignore"),
 			base: here === "." ? "" : here,
+			prefix: "",
 		});
 		const active = declared.length === 0 ? rules : [...rules, ...declared];
 
-		const manifest = readJson(join(directory, "package.json"), Manifest);
+		const manifestPath = join(directory, "package.json");
+		const manifestAt = here === "." ? "package.json" : `${here}/package.json`;
+		const manifestKept =
+			!config.respectGitignore || !isIgnored(active, manifestAt, false);
+		if (existsSync(manifestPath) && !manifestKept) {
+			skipped.push(manifestAt);
+			problems.push(`${manifestAt} is excluded by an ignore file, so its scripts are not offered`);
+		}
+		const manifest = existsSync(manifestPath) && manifestKept
+			? readJson(manifestPath, Manifest)
+			: undefined;
+		if (existsSync(manifestPath) && manifestKept && manifest === undefined) {
+			problems.push(`${manifestAt} is not a package.json this extension can read`);
+		}
 		if (manifest !== undefined) {
-			const scripts = scriptsFrom(manifest.scripts, config, problems, join(here, "package.json"));
+			const scripts = scriptsFrom(manifest.scripts, config, problems, manifestAt);
 			if (scripts.length > 0) {
 				packages.push({
 					dir: directory,

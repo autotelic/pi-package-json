@@ -60,7 +60,8 @@ is right in one repository is wrong in the next.
 links, so a link cannot pull in a package from outside the tree, and it cannot
 loop. Every tool's working directory is a directory the scan visited.
 
-**It reads the repository's ignore files.** See [Ignore files](#ignore-files).
+**It reads the repository's ignore files**, above the launch directory as well as
+below it. See [Ignore files](#ignore-files).
 
 **It bounds its own surface.** `maxTools` caps what one scan can add to a
 prompt. A scan that reaches the cap says so; it never quietly returns fewer
@@ -116,8 +117,20 @@ What is honoured:
 | A later `!` re-includes | `*.log` then `!keep.log` |
 | A nested file is relative to its own directory, and wins over the root | `services/web/.gitignore` |
 
-`.git/info/exclude` is read as well. The global `core.excludesFile` is not,
-because reading it needs a `git config` lookup.
+`.git/info/exclude` is read from the repository root, as well as every
+`.gitignore` between that root and the launch directory. Pi is often started
+inside one package of a repository, and the file that says what the repository
+is lives above that package. The walk stops at the repository root: without a
+repository above the launch directory nothing is read, because a stray ignore
+file in a home directory must not decide what a repository contains.
+
+A manifest that an ignore file excludes is left out and **reported**, because a
+package missing from the tool list has to be explainable. The directory itself
+is still entered, since git ignores the file and not its neighbours.
+
+Not honoured: the global `core.excludesFile`, which needs a `git config`
+lookup, and a trailing space escaped with a backslash, because the line is
+trimmed.
 
 An ignored directory is pruned and never entered. That is what git does, and for
 the same reason: git will not re-include a path whose parent is excluded. So a
@@ -133,14 +146,20 @@ Set `respectGitignore` to `false` to keep what the repository excludes.
 
 ## Parameters
 
-Every tool takes the same four parameters.
+Every tool takes the same five parameters.
 
 | Parameter | Meaning |
 |---|---|
 | `args` | Extra arguments for the script. pnpm, yarn and bun receive them directly. npm receives them after a `--` separator, which the extension adds for npm alone -- pnpm passes a separator through to the script, so the script would receive a literal `--`. |
 | `env` | Extra environment variables. The description names the ones the script reads. |
-| `timeout` | Seconds before the script is killed. The default is the configured `timeoutSeconds`; the largest allowed value is 3600. |
+| `timeout` | Seconds before the script is stopped. The default is the configured `timeoutSeconds`; the largest allowed value is 3600. |
 | `background` | Start the script detached and return at once with a pid and a log path. Use it for servers and watchers, which do not exit. |
+| `settle` | Report a non-zero exit as a result rather than as a failed call. **A program that branches on an exit code must pass this.** Without it a failing script aborts the caller. |
+
+A script that outlives its timeout is asked to stop with `SIGTERM`, and killed
+with `SIGKILL` only after a five second grace period -- the same as a cancelled
+call. A test script that brings up a database container brings it down on the
+way out, and a kill that skips that leaves the container running.
 
 ## Results
 
@@ -166,8 +185,11 @@ its log path. Several useful scripts -- a coverage gate, a lint gate, a format
 check -- answer with a non-zero exit, and a caller that has to parse the exit
 code out of prose is a caller that will get it wrong.
 
-The complete output of every run is written to the log file, and a cut message
-names that path.
+The complete output of every run is written to its log file as it arrives, so
+the log holds everything even when the result does not: the fact the model reads
+is capped, and the file is not. Each call gets its own log path, because two
+detached runs of one script would otherwise truncate each other. A cut or failed
+message names the path.
 
 ## Configuration
 
@@ -274,7 +296,16 @@ repository.
 
 **A large roster costs prompt space under Fabric.** Fabric lists captured tools
 as a names-only roster, so the cost grows with the number of scripts.
-`excludeScripts` and `maxTools` are the answers when that matters.
+`excludeScripts`, an ignore file and `maxTools` are the answers when that
+matters.
+
+**`/packages reload` cannot withdraw a tool.** Pi has no way to unregister one,
+so a script removed from a `package.json` keeps its tool until pi restarts. A
+rescan adds and renames; it does not subtract.
+
+**A process tree is not killed on Windows.** There are no process groups to
+signal there, so only the child is stopped and a script that started another
+program can leave it behind. On macOS and Linux the whole group is signalled.
 
 ## Install
 

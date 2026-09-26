@@ -1,3 +1,5 @@
+import { execFileSync } from "node:child_process";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { discover, environmentNames, parseManagerField } from "../extensions/package-scripts/discover.ts";
 import { config, json, manifest, workspace } from "./support.ts";
@@ -80,6 +82,51 @@ describe("discover", () => {
 		expect(found.packages.map((entry) => entry.rel)).toEqual([".", "vendor/loose"]);
 		expect(found.skipped).toContain("dist");
 		expect(found.skipped).toContain("repos");
+	});
+
+	it("leaves out a manifest an ignore file excludes, and says so", () => {
+		const root = workspace({
+			".gitignore": "packages/legacy/package.json\n",
+			"package.json": json(manifest("root-app", { build: "tsc" })),
+			"packages/legacy/package.json": json(manifest("legacy", { build: "tsc" })),
+		});
+		const found = discover(root, config());
+		expect(found.packages.map((entry) => entry.rel)).toEqual(["."]);
+		expect(found.problems.some((problem) => problem.includes("legacy"))).toBe(true);
+	});
+
+	it("still enters the directory whose manifest it left out", () => {
+		const root = workspace({
+			".gitignore": "legacy/package.json\n",
+			"package.json": json(manifest("root-app", { build: "tsc" })),
+			"legacy/package.json": json(manifest("legacy", { build: "tsc" })),
+			"legacy/tool/package.json": json(manifest("tool", { build: "tsc" })),
+		});
+		expect(discover(root, config()).packages.map((entry) => entry.rel)).toEqual([".", "legacy/tool"]);
+	});
+
+	it("reads the ignore files above a launch directory inside a repository", () => {
+		const repo = workspace({
+			".gitignore": "dist\n",
+			"package.json": json(manifest("root-app", { build: "tsc" })),
+			"sub/.gitignore": "generated\n",
+			"sub/package.json": json(manifest("sub-app", { build: "tsc" })),
+			"sub/dist/package.json": json(manifest("dist-pkg", { build: "tsc" })),
+			"sub/generated/package.json": json(manifest("gen-pkg", { build: "tsc" })),
+		});
+		execFileSync("git", ["init", "--quiet"], { cwd: repo, stdio: "pipe" });
+		const found = discover(join(repo, "sub"), config());
+		expect(found.packages.map((entry) => entry.rel)).toEqual(["."]);
+		expect(found.skipped).toContain("dist");
+		expect(found.skipped).toContain("generated");
+	});
+
+	it("reads no ignore file above a directory that is not in a repository", () => {
+		const root = workspace({
+			"package.json": json(manifest("root-app", { build: "tsc" })),
+			"dist/package.json": json(manifest("dist-pkg", { build: "tsc" })),
+		});
+		expect(discover(root, config()).packages.map((entry) => entry.rel)).toEqual([".", "dist"]);
 	});
 
 	it("reads a nested ignore file relative to its own directory", () => {
@@ -213,12 +260,14 @@ describe("discover", () => {
 		expect(found.packages.map((entry) => entry.manager)).toEqual(["pnpm", "npm"]);
 	});
 
-	it("ignores a package.json that is not an object", () => {
+	it("reports a package.json it cannot read", () => {
 		const root = workspace({
 			"package.json": json(manifest("root-app", { build: "tsc" })),
 			"broken/package.json": "[1, 2, 3]",
 		});
-		expect(discover(root, config()).packages.map((entry) => entry.rel)).toEqual(["."]);
+		const found = discover(root, config());
+		expect(found.packages.map((entry) => entry.rel)).toEqual(["."]);
+		expect(found.problems.some((problem) => problem.includes("broken/package.json"))).toBe(true);
 	});
 
 	it("ignores a package.json that does not match the schema", () => {

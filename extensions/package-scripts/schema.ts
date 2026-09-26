@@ -18,8 +18,8 @@ export const Manifest = Type.Object({
 /** A decoded `package.json`. */
 export type Manifest = Static<typeof Manifest>;
 
-/** The part of `package-scripts.json` this extension reads. */
-export const Config = Type.Object({
+/** Every setting this extension accepts, with the schema that decides it. */
+export const ConfigFields = {
 	skipDirs: Type.Optional(Type.Array(Type.String())),
 	excludeScripts: Type.Optional(Type.Array(Type.String())),
 	includeScripts: Type.Optional(Type.Array(Type.String())),
@@ -37,7 +37,21 @@ export const Config = Type.Object({
 	respectGitignore: Type.Optional(Type.Boolean()),
 	notes: Type.Optional(Type.Record(Type.String(), Type.String())),
 	backgroundScripts: Type.Optional(Type.Array(Type.String())),
-});
+};
+
+/** The part of `package-scripts.json` this extension reads. */
+export const Config = Type.Object(ConfigFields);
+
+/**
+ * The same settings, with one this extension does not know treated as a failure.
+ *
+ * A configuration file is decoded twice: once against this, which catches a
+ * misspelled setting, and once against `Config`, which is what the extension
+ * uses. The pair is what turns "my file did nothing" into a named problem,
+ * because an unknown key and a wrong type both fail the lenient decode and only
+ * the unknown key fails this one.
+ */
+export const StrictConfig = Type.Object(ConfigFields, { additionalProperties: false });
 
 /** A decoded `package-scripts.json`. Every field is optional. */
 export type Config = Static<typeof Config>;

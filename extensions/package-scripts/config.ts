@@ -1,5 +1,6 @@
+import { existsSync } from "node:fs";
 import { join } from "node:path";
-import { Config, readJson } from "./schema.ts";
+import { Config, readJson, StrictConfig } from "./schema.ts";
 import type { PackageManager } from "./types.ts";
 
 /** Everything the scan and the tools read from configuration. */
@@ -103,10 +104,32 @@ export const DEFAULT_CONFIG: ScriptsConfig = {
  * then it IS the fallback -- or it is a complete configuration. The alternative,
  * a second all-optional type beside this one, gives every field two spellings
  * that drift apart the first time one of them changes.
+ *
+ * A file that cannot be used is reported. The whole file is used or none of it
+ * is: a setting with the wrong type leaves the reader unable to say which half
+ * of the file they meant, and a configuration that half applies is worse than
+ * one that plainly does nothing. A setting this extension does not know is
+ * named and the rest of the file is still used, because a misspelled key beside
+ * four correct ones is a typo rather than a decision.
  */
-const readConfigFile = (path: string, fallback: ScriptsConfig): ScriptsConfig => {
+const readConfigFile = (
+	path: string,
+	fallback: ScriptsConfig,
+	problems: string[],
+): ScriptsConfig => {
+	if (!existsSync(path)) return fallback;
 	const declared = readJson(path, Config);
-	if (declared === undefined) return fallback;
+	if (declared === undefined) {
+		problems.push(
+			`${path} was not used: it is not JSON, or a setting in it has a type this extension does not accept`,
+		);
+		return fallback;
+	}
+	if (readJson(path, StrictConfig) === undefined) {
+		problems.push(
+			`${path} names a setting this extension does not know, and everything it names is used`,
+		);
+	}
 	return {
 		skipDirs: declared.skipDirs ?? fallback.skipDirs,
 		excludeScripts: declared.excludeScripts ?? fallback.excludeScripts,
@@ -128,10 +151,11 @@ const readConfigFile = (path: string, fallback: ScriptsConfig): ScriptsConfig =>
  * which wins over the built-in defaults. Each field is chosen on its own, so a
  * file can override one setting and inherit the rest.
  */
-export const loadConfig = (root: string): ScriptsConfig =>
+export const loadConfig = (root: string, problems: string[]): ScriptsConfig =>
 	readConfigFile(
 		join(root, ".pi", "package-scripts.json"),
-		readConfigFile(join(root, "package-scripts.json"), DEFAULT_CONFIG),
+		readConfigFile(join(root, "package-scripts.json"), DEFAULT_CONFIG, problems),
+		problems,
 	);
 
 /** A script name, and the pattern that is tested against it. */

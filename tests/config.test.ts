@@ -89,8 +89,24 @@ describe("loadConfig", () => {
 });
 
 describe("BUILT_IN_SKIP_DIRS", () => {
-	it("never exposes node_modules, and assumes nothing else", () => {
-		expect(BUILT_IN_SKIP_DIRS).toEqual(["node_modules"]);
+	it("lists only another tool's own store, and no project convention", () => {
+		expect(BUILT_IN_SKIP_DIRS).toContain("node_modules");
+		expect(BUILT_IN_SKIP_DIRS).toContain(".git");
+		for (const convention of ["dist", "build", "out", "coverage", "vendor", "target", "tmp"]) {
+			expect(BUILT_IN_SKIP_DIRS).not.toContain(convention);
+		}
+	});
+});
+
+describe("respectGitignore", () => {
+	it("is on by default", () => {
+		const root = workspace({ "package.json": "{}" });
+		expect(loadConfig(root).respectGitignore).toBe(true);
+	});
+
+	it("can be turned off", () => {
+		const root = workspace({ "package-scripts.json": json({ respectGitignore: false }) });
+		expect(loadConfig(root).respectGitignore).toBe(false);
 	});
 });
 

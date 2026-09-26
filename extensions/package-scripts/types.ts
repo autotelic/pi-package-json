@@ -39,6 +39,18 @@ export interface DiscoveredPackage {
 	readonly scripts: ReadonlyArray<ScriptEntry>;
 }
 
+/**
+ * A path, and the directory it is measured from.
+ *
+ * Both halves travel in one argument because the two are plain strings: a call
+ * with the arguments the wrong way round compiles and then answers about a
+ * different directory.
+ */
+export interface RelativePath {
+	readonly base: string;
+	readonly path: string;
+}
+
 /** A model-facing string, and whether it was cut to fit its limit. */
 export interface Clamped {
 	readonly text: string;

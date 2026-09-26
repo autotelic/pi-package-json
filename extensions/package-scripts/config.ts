@@ -32,6 +32,14 @@ export interface ScriptsConfig {
 	 */
 	readonly maxTools: number;
 	/**
+	 * Whether a path the repository's ignore files exclude is left alone.
+	 *
+	 * On by default. A repository that keeps ignore files has already said which
+	 * directories are not its code, and that answer is better than any list this
+	 * extension could ship.
+	 */
+	readonly respectGitignore: boolean;
+	/**
 	 * Text to add to a script's tool description, by script-name pattern.
 	 *
 	 * This is how a repository says what a script DOES rather than what it runs.
@@ -51,19 +59,27 @@ export interface ScriptsConfig {
 }
 
 /**
- * The one directory name the scan refuses on its own.
+ * Directories whose contents belong to another tool rather than to the project.
  *
- * `node_modules` is not a project convention, it is the package manager's own
- * store: every dependency ships a `package.json`, none of them is this
- * repository's code, and a tool that ran one of their scripts would be running
- * someone else's code under this repository's name.
+ * These are not project conventions. Version-control metadata and a package
+ * manager's store are a tool's own state: every dependency ships a
+ * `package.json`, none of it is this repository's code, and a tool that ran one
+ * of their scripts would run someone else's code under this repository's name.
  *
- * Nothing else is built in. `dist`, `build`, `vendor` and `target` are
- * conventions of particular languages and particular teams, and a name that is
- * right in one repository is wrong in the next. A directory whose `package.json`
- * should not become tools goes in `skipDirs`, where the repository says so.
+ * Nothing about the project itself is built in. `dist`, `build`, `vendor` and
+ * `target` are conventions of particular languages and particular teams, and a
+ * name that is right in one repository is wrong in the next. A project declares
+ * what is not its own code in its ignore files, which this extension reads, and
+ * in `skipDirs` for a directory that is not in version control at all.
  */
-export const BUILT_IN_SKIP_DIRS: ReadonlyArray<string> = ["node_modules"];
+export const BUILT_IN_SKIP_DIRS: ReadonlyArray<string> = [
+	".git",
+	".hg",
+	".svn",
+	"node_modules",
+	".pnpm-store",
+	".yarn",
+];
 
 /** The configuration a repository gets when it declares nothing. */
 export const DEFAULT_CONFIG: ScriptsConfig = {
@@ -74,6 +90,7 @@ export const DEFAULT_CONFIG: ScriptsConfig = {
 	maxDepth: 8,
 	timeoutSeconds: 300,
 	maxTools: 500,
+	respectGitignore: true,
 	notes: {},
 	backgroundScripts: [],
 };
@@ -98,6 +115,7 @@ const readConfigFile = (path: string, fallback: ScriptsConfig): ScriptsConfig =>
 		maxDepth: declared.maxDepth ?? fallback.maxDepth,
 		timeoutSeconds: declared.timeoutSeconds ?? fallback.timeoutSeconds,
 		maxTools: declared.maxTools ?? fallback.maxTools,
+		respectGitignore: declared.respectGitignore ?? fallback.respectGitignore,
 		notes: declared.notes ?? fallback.notes,
 		backgroundScripts: declared.backgroundScripts ?? fallback.backgroundScripts,
 	};

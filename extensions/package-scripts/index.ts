@@ -38,8 +38,10 @@
  *   }
  */
 import { createHash } from "node:crypto";
+import { readdirSync, statSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import type {
 	AgentToolResult,
 	ExtensionAPI,
@@ -60,6 +62,7 @@ import {
 import { discover } from "./discover.ts";
 import { runBackground, runSync, scriptArguments, type RunOutcome } from "./exec.ts";
 import { planTools, uniqueLabels } from "./naming.ts";
+import { PackageIdentity, readJson } from "./schema.ts";
 import { clamp, durationText, errorText, shorten } from "./text.ts";
 import type { Discovery, PlannedTool } from "./types.ts";
 
@@ -135,6 +138,41 @@ const answered = (text: string, details: ScriptDetails): AgentToolResult<ScriptD
 	content: [{ type: "text", text }],
 	details,
 });
+
+/** The directory this extension's own source files live in. */
+const sourceDirectory = (): string => dirname(fileURLToPath(import.meta.url));
+
+/**
+ * The newest modification time among this extension's own source files.
+ *
+ * A session loads an extension at `session_start` and keeps it. `pi update`
+ * replaces the checkout on disk, and the running session goes on calling the
+ * code it loaded. That is how a review can name a revision and still describe
+ * defects that revision had already fixed, so `/packages` says which copy it is
+ * running and whether the copy on disk has moved on.
+ */
+const sourceStamp = (): number => {
+	const directory = sourceDirectory();
+	let newest = 0;
+	try {
+		for (const entry of readdirSync(directory)) {
+			if (!entry.endsWith(".ts")) continue;
+			const stamp = statSync(join(directory, entry)).mtimeMs;
+			if (stamp > newest) newest = stamp;
+		}
+	} catch {
+		return 0;
+	}
+	return newest;
+};
+
+/** This extension's own name and version, as the manifest beside it declares. */
+const identity = (): string => {
+	const directory = sourceDirectory();
+	const manifest = readJson(join(directory, "..", "..", "package.json"), PackageIdentity);
+	if (manifest === undefined) return directory;
+	return `${manifest.name} ${manifest.version} - ${directory}`;
+};
 
 /** One log directory per repository, so two checkouts never overwrite each other. */
 const logDirectory = (root: string): string =>
@@ -306,8 +344,15 @@ const summaryOf = (state: SessionState): string => {
 	return parts.join(" - ");
 };
 
-const reportOf = (state: SessionState, wanted: string): string => {
-	const lines = [summaryOf(state)];
+const reportOf = (state: SessionState, wanted: string, drifted: boolean): string => {
+	const lines: string[] = [];
+	if (drifted) {
+		lines.push(
+			"The extension source on disk changed after this session loaded it, so these tools run the older code. Restart pi to use the newer code.",
+			"",
+		);
+	}
+	lines.push(summaryOf(state));
 	if (wanted === "") {
 		lines.push("");
 		for (const pkg of state.discovery.packages) {
@@ -337,6 +382,10 @@ const reportOf = (state: SessionState, wanted: string): string => {
 	return lines.join("\n");
 };
 
+/** The whole report, with the running revision last so a reviewer can name it. */
+const fullReport = (state: SessionState, wanted: string, loadedAt: number): string =>
+	`${reportOf(state, wanted, sourceStamp() > loadedAt)}\n\n${identity()}`;
+
 /**
  * Register this repository's package.json scripts as pi tools.
  *
@@ -346,6 +395,7 @@ const reportOf = (state: SessionState, wanted: string): string => {
 export default function packageScripts(pi: ExtensionAPI): void {
 	let state: SessionState | undefined;
 	let registered = new Set<string>();
+	const loadedAt = sourceStamp();
 
 	/**
 	 * Scan the directory and register one tool per script.
@@ -431,7 +481,7 @@ export default function packageScripts(pi: ExtensionAPI): void {
 				ctx.ui.notify("package.json scripts: the scan has not run in this session.", "warning");
 				return;
 			}
-			ctx.ui.notify(reportOf(state, args.trim()), "info");
+			ctx.ui.notify(fullReport(state, args.trim(), loadedAt), "info");
 		},
 	});
 }

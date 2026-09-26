@@ -44,26 +44,78 @@ describe("discover", () => {
 		expect(found.packages[0]?.scripts.length).toBe(2);
 	});
 
-	it("does not enter node_modules or a dot-directory", () => {
+	it("does not enter another tool's own store", () => {
 		const root = workspace({
 			"package.json": json(manifest("root-app", { build: "tsc" })),
 			"node_modules/dep/package.json": json(manifest("dep", { sneaky: "rm -rf /" })),
-			".cache/inner/package.json": json(manifest("inner", { sneaky: "rm -rf /" })),
+			".git/modules/package.json": json(manifest("submodule", { sneaky: "rm -rf /" })),
 		});
 		const found = discover(root, config());
 		expect(found.packages.map((entry) => entry.rel)).toEqual(["."]);
 		expect(found.skipped).toContain("node_modules");
-		expect(found.skipped).toContain(".cache");
+		expect(found.skipped).toContain(".git");
 	});
 
-	it("enters a directory whose name is only a convention elsewhere", () => {
+	it("enters a hidden directory the repository does not ignore", () => {
 		const root = workspace({
 			"package.json": json(manifest("root-app", { build: "tsc" })),
+			".config/inner/package.json": json(manifest("inner", { build: "tsc" })),
+			"node_modules/.cache/package.json": json(manifest("cached", { build: "tsc" })),
+		});
+		expect(discover(root, config()).packages.map((entry) => entry.rel)).toEqual([
+			".",
+			".config/inner",
+		]);
+	});
+
+	it("leaves alone a directory the repository's ignore file excludes", () => {
+		const root = workspace({
+			".gitignore": "dist/\nrepos/\n*.tsbuildinfo\n",
+			"package.json": json(manifest("root-app", { build: "tsc" })),
 			"dist/inner/package.json": json(manifest("inner", { build: "tsc" })),
+			"repos/clone/package.json": json(manifest("clone", { build: "tsc" })),
 			"vendor/loose/package.json": json(manifest("loose", { build: "tsc" })),
 		});
 		const found = discover(root, config());
-		expect(found.packages.map((entry) => entry.rel)).toEqual([".", "dist/inner", "vendor/loose"]);
+		expect(found.packages.map((entry) => entry.rel)).toEqual([".", "vendor/loose"]);
+		expect(found.skipped).toContain("dist");
+		expect(found.skipped).toContain("repos");
+	});
+
+	it("reads a nested ignore file relative to its own directory", () => {
+		const root = workspace({
+			".gitignore": "logs\n",
+			"package.json": json(manifest("root-app", { build: "tsc" })),
+			"sub/.gitignore": "inner\n",
+			"sub/inner/package.json": json(manifest("inner", { build: "tsc" })),
+			"sub/other/package.json": json(manifest("other", { build: "tsc" })),
+		});
+		expect(discover(root, config()).packages.map((entry) => entry.rel)).toEqual([".", "sub/other"]);
+	});
+
+	it("can be told to keep what the ignore file excludes", () => {
+		const root = workspace({
+			".gitignore": "dist/\n",
+			"package.json": json(manifest("root-app", { build: "tsc" })),
+			"dist/inner/package.json": json(manifest("inner", { build: "tsc" })),
+		});
+		expect(discover(root, config({ respectGitignore: false })).packages.map((e) => e.rel)).toEqual([
+			".",
+			"dist/inner",
+		]);
+	});
+
+	it("assumes nothing about a directory name on its own", () => {
+		const root = workspace({
+			"package.json": json(manifest("root-app", { build: "tsc" })),
+			"dist/inner/package.json": json(manifest("inner", { build: "tsc" })),
+			"build/loose/package.json": json(manifest("loose", { build: "tsc" })),
+		});
+		expect(discover(root, config()).packages.map((entry) => entry.rel)).toEqual([
+			".",
+			"build/loose",
+			"dist/inner",
+		]);
 	});
 
 	it("refuses a script name that a package manager reads as an option", () => {

@@ -47,16 +47,20 @@ options before the script name, so a script named `--help` would print the
 manager's help instead of running. Such a name is refused and reported rather
 than registered.
 
-**It skips `node_modules` and dot-directories, and nothing else by name.**
-`node_modules` is not a project convention, it is the package manager's own
-store: every dependency ships a `package.json`, and none of them is this
-repository's code. `dist`, `build`, `vendor` and `target` are conventions of
-particular languages and particular teams, so they are not assumed. Everything
-else the repository declares in `skipDirs`.
+**It does not guess which directories are the project's.** The built-in list
+holds another tool's own state -- version-control metadata and package stores,
+where every dependency ships a `package.json` and none of it is this
+repository's code. Everything else comes from the repository itself: its
+`.gitignore` files, and `skipDirs` for a directory that is not in version
+control at all. `dist`, `build`, `vendor` and `target` are conventions of
+particular languages and particular teams, so they are not assumed. A name that
+is right in one repository is wrong in the next.
 
 **It stays under the launch directory.** The scan does not follow symbolic
 links, so a link cannot pull in a package from outside the tree, and it cannot
 loop. Every tool's working directory is a directory the scan visited.
+
+**It reads the repository's ignore files.** See [Ignore files](#ignore-files).
 
 **It bounds its own surface.** `maxTools` caps what one scan can add to a
 prompt. A scan that reaches the cap says so; it never quietly returns fewer
@@ -89,6 +93,43 @@ of a name.
 
 Script names are lowercased and every character that is not a letter or a digit
 becomes a single underscore, so `test:math:coverage` becomes `run_test_math_coverage`.
+
+## Ignore files
+
+A monorepo already says which directories are not part of it, and it says so in
+`.gitignore`. That answer is better than any list this extension could ship, so
+the scan reads it.
+
+    .gitignore: dist/
+    services/api/dist/package.json   not scanned
+    vendor/loose/package.json        scanned, because nothing excludes it
+
+What is honoured:
+
+| Rule | Example |
+|---|---|
+| A bare name matches at any depth | `dist` catches `services/api/dist` |
+| A leading or middle slash anchors to the declaring directory | `/build` catches `build`, not `packages/a/build` |
+| A trailing slash means directories only | `dist/` |
+| One star stops at a slash, two stars cross one | `packages/*/lib`, `**/generated` |
+| `?` is one character, `[0-9]` is a range | `file?.ts`, `file[0-9].ts` |
+| A later `!` re-includes | `*.log` then `!keep.log` |
+| A nested file is relative to its own directory, and wins over the root | `services/web/.gitignore` |
+
+`.git/info/exclude` is read as well. The global `core.excludesFile` is not,
+because reading it needs a `git config` lookup.
+
+An ignored directory is pruned and never entered. That is what git does, and for
+the same reason: git will not re-include a path whose parent is excluded. So a
+negation can never resurrect anything inside an ignored directory, in this
+extension or in git.
+
+The matcher is measured against git itself. A test builds a fixture, writes an
+ignore file, and compares every case against `git check-ignore`, so the answer
+comes from the program that defines the format rather than from a reading of its
+documentation.
+
+Set `respectGitignore` to `false` to keep what the repository excludes.
 
 ## Parameters
 
@@ -140,6 +181,7 @@ field over the first, which wins over the defaults.
   "excludeScripts": ["prepare"],
   "includeScripts": [],
   "backgroundScripts": ["dev", "dev:*", "*:watch"],
+  "respectGitignore": true,
   "notes": {
     "migrate:*": "changes the schema of the database named by the environment",
     "deploy*": "changes shared infrastructure"
@@ -157,6 +199,7 @@ field over the first, which wins over the defaults.
 | `excludeScripts` | `[]` | Script names to leave out. `*` matches any run of characters. |
 | `includeScripts` | `[]` | When not empty, only scripts that match are kept. |
 | `backgroundScripts` | `[]` | Scripts that start detached unless the caller passes `background: false`. |
+| `respectGitignore` | `true` | Leave alone what the repository's ignore files exclude. |
 | `notes` | `{}` | Text added to a tool's description, keyed by script-name pattern. The first matching pattern wins. |
 | `manager` | detected | Force a package manager instead of detecting one. |
 | `maxDepth` | `8` | Directory levels below the launch directory to scan. |
@@ -203,6 +246,12 @@ it, the tool returns a pid and a log path at once.
 `/packages` lists the packages that were found and how many scripts each one
 contributed. `/packages build` lists the tools whose name or script matches, and
 `/packages reload` scans again after you add a script or a package.
+
+The report ends with the extension's own name, version and path, so a reader can
+name the revision they are looking at. When the source on disk has changed since
+the session loaded it, the report says so at the top: a session keeps the code it
+loaded at `session_start`, and `pi update` alone does not change what a running
+session calls.
 
 A root script that only calls a nested one is an alias for it, so the report
 names the target rather than leaving two names for one action:

@@ -34,12 +34,22 @@ export const Config = Type.Object({
 	maxDepth: Type.Optional(Type.Integer({ minimum: 1, maximum: 32 })),
 	timeoutSeconds: Type.Optional(Type.Integer({ minimum: 1, maximum: 3_600 })),
 	maxTools: Type.Optional(Type.Integer({ minimum: 1, maximum: 100_000 })),
+	respectGitignore: Type.Optional(Type.Boolean()),
 	notes: Type.Optional(Type.Record(Type.String(), Type.String())),
 	backgroundScripts: Type.Optional(Type.Array(Type.String())),
 });
 
 /** A decoded `package-scripts.json`. Every field is optional. */
 export type Config = Static<typeof Config>;
+
+/** The two fields this extension reads from its own manifest. */
+export const PackageIdentity = Type.Object({
+	name: Type.String(),
+	version: Type.String(),
+});
+
+/** The name and version of the package an extension file ships in. */
+export type PackageIdentity = Static<typeof PackageIdentity>;
 
 /**
  * Decode JSON text against a schema.

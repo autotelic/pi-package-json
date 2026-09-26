@@ -33,6 +33,16 @@
       "rule": "joggle/unaccounted-drop",
       "path": "tests/support.ts",
       "reason": "Judged, unjudged here, AND a genuine gap worth reporting. The candidate is any exported function containing a continue; workspace skips a directory key and is exported, so it qualifies. Its caller is a test, and that is the gap: joggle already knows what a test file is -- policy.testFiles holds the pattern and workspace records unit.test -- and check.ts uses it to keep test declarations out of duplicate-implementation. This rule does not consult it. Skipping unit.test here would remove this finding in every repository, not only this one. See the feedback note in the README."
+    },
+    {
+      "rule": "joggle/inferred-over-recorded",
+      "path": "extensions/**",
+      "reason": "The rule pairs 'this function derives a boolean' with 'some declaration in this file records a boolean' and does not check that they are the same fact. Three findings, none of them a fact recorded twice: scriptsFrom derives looksLikeAnOption(name) while ScriptsConfig records respectGitignore; readIgnoreFile derives 'the line compiled' while IgnoreRule records negated; timeoutMilliseconds derives 'the caller named no timeout' while respectGitignore is recorded again. A subject comparison would settle all three. Reported as feedback; the exception is scoped to this package so the rule still runs on the rest of the repository."
+    },
+    {
+      "rule": "joggle/unaccounted-drop",
+      "path": "extensions/package-scripts/ignore.ts",
+      "reason": "isIgnored skips a rule that cannot apply to the path -- a directory-only rule tested against a file, or a rule declared in a directory the path is not under. Nothing is dropped from a caller's view: the function answers one boolean question, and the rules it stepped over were never going to change that answer. The rule reads a `continue` in an exported function as a funnel that shortened the caller's data. Reported as feedback; see the note in the README."
     }
   ],
   "architecture": {

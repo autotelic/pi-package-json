@@ -1,9 +1,16 @@
 import { existsSync, readdirSync, type Dirent } from "node:fs";
-import { join, relative, resolve } from "node:path";
+import { join, relative, resolve, sep } from "node:path";
 import { BUILT_IN_SKIP_DIRS, matchesPattern, type ScriptsConfig } from "./config.ts";
+import { isIgnored, readIgnoreFile, type IgnoreRule } from "./ignore.ts";
 import { Manifest, readJson, type Manifest as ManifestValue } from "./schema.ts";
 import { errorText } from "./text.ts";
-import type { DiscoveredPackage, Discovery, PackageManager, ScriptEntry } from "./types.ts";
+import type {
+	DiscoveredPackage,
+	Discovery,
+	PackageManager,
+	RelativePath,
+	ScriptEntry,
+} from "./types.ts";
 
 /** Lockfiles, in the order that decides the manager when nothing declares one. */
 const LOCKFILES: ReadonlyArray<readonly [string, PackageManager]> = [
@@ -15,10 +22,10 @@ const LOCKFILES: ReadonlyArray<readonly [string, PackageManager]> = [
 	["npm-shrinkwrap.json", "npm"],
 ];
 
-/** `$NAME` and `${NAME}` inside a script body. */
+/** A dollar sign, an optional brace, and the name a script reads. */
 const ENVIRONMENT_REFERENCE = /\$\{?([A-Za-z_][A-Za-z0-9_]*)/g;
 
-/** `"pnpm@9.10.0+sha256.…"` becomes `"pnpm"`. */
+/** A domain name out of a package-manager declaration, with its version dropped. */
 export const parseManagerField = (declared: string | undefined): PackageManager | undefined => {
 	if (declared === undefined) return undefined;
 	const name = declared.split("@")[0]?.trim().toLowerCase();
@@ -72,11 +79,10 @@ const noteFor = (name: string, notes: Readonly<Record<string, string>>): string 
 /**
  * A script name that would be read as an option rather than as a name.
  *
- * The command is built as `<manager> run <name>`, and a manager parses its own
- * options before the script name, so a script called `--help` would print the
- * manager's help instead of running. Refusing the name keeps the tool list
- * unable to express that, rather than relying on every manager to be careful
- * with the same input.
+ * The command is built as a manager, then its run subcommand, then the script
+ * name, and a manager parses its own options before that name. A script called
+ * `--help` would print the manager's help instead of running, so the name is
+ * refused rather than registered.
  */
 const looksLikeAnOption = (name: string): boolean => name.startsWith("-");
 
@@ -84,9 +90,9 @@ const looksLikeAnOption = (name: string): boolean => name.startsWith("-");
  * The scripts of one manifest that survive the include and exclude patterns.
  *
  * The pattern lists are matched in the order the configuration declares them,
- * and an empty include list means "everything". A note and a background
- * default are resolved here as well, because they are properties of the
- * repository's intent for the script rather than of the tool that runs it.
+ * and an empty include list means everything. A note and a background default
+ * are resolved here as well, because they are properties of the repository's
+ * intent for the script rather than of the tool that runs it.
  *
  * A refused script is reported rather than dropped: a repository that has one
  * should be able to see that this extension cannot offer it.
@@ -126,13 +132,28 @@ const scriptsFrom = (
 	return kept;
 };
 
+/** A path relative to the scan root, with forward slashes on every platform. */
+const portable = (subject: RelativePath): string => {
+	const relativePath = relative(subject.base, subject.path);
+	return relativePath === "" ? "." : relativePath.split(sep).join("/");
+};
+
 /**
- * Scan a launch directory for `package.json` files and their scripts.
+ * Scan a launch directory for package.json files and their scripts.
  *
  * The scan is depth-first and sorted, so the same tree always produces the same
  * order, and the root package comes first. It does not follow symbolic links --
- * a symbolic link reports false from `isDirectory`, and that is also what stops
+ * a symbolic link reports false from isDirectory, and that is also what stops
  * the walk from descending into a package-manager store.
+ *
+ * Two things decide which directories are left alone. The built-in list holds
+ * another tool's own state: version-control metadata and package stores, where
+ * every dependency ships a package.json and none of it is this repository's
+ * code. Everything else comes from the repository itself -- its .gitignore
+ * files, which say what is not part of it, and its skipDirs.
+ *
+ * An ignored directory is pruned, never entered. That is what git does, and for
+ * the same reason: git will not re-include a path whose parent is excluded.
  */
 export const discover = (root: string, config: ScriptsConfig): Discovery => {
 	const absoluteRoot = resolve(root);
@@ -141,9 +162,19 @@ export const discover = (root: string, config: ScriptsConfig): Discovery => {
 	const packages: DiscoveredPackage[] = [];
 	const rootManager = detectManager(absoluteRoot, config.managerOverride);
 	const excluded = new Set([...BUILT_IN_SKIP_DIRS, ...config.skipDirs]);
+	const inherited = readIgnoreFile({
+		path: join(absoluteRoot, ".git", "info", "exclude"),
+		base: "",
+	});
 
-	const visit = (directory: string, depth: number): void => {
-		const here = relative(absoluteRoot, directory) || ".";
+	const visit = (directory: string, depth: number, rules: ReadonlyArray<IgnoreRule>): void => {
+		const here = portable({ base: absoluteRoot, path: directory });
+		const declared = readIgnoreFile({
+			path: join(directory, ".gitignore"),
+			base: here === "." ? "" : here,
+		});
+		const active = declared.length === 0 ? rules : [...rules, ...declared];
+
 		const manifest = readJson(join(directory, "package.json"), Manifest);
 		if (manifest !== undefined) {
 			const scripts = scriptsFrom(manifest.scripts, config, problems, join(here, "package.json"));
@@ -169,15 +200,20 @@ export const discover = (root: string, config: ScriptsConfig): Discovery => {
 		const ordered = [...entries].sort((left, right) => left.name.localeCompare(right.name));
 		for (const entry of ordered) {
 			if (!entry.isDirectory()) continue;
-			if (entry.name.startsWith(".") || excluded.has(entry.name)) {
-				skipped.push(join(here, entry.name));
+			const path = here === "." ? entry.name : `${here}/${entry.name}`;
+			if (excluded.has(entry.name)) {
+				skipped.push(path);
 				continue;
 			}
-			visit(join(directory, entry.name), depth - 1);
+			if (config.respectGitignore && isIgnored(active, path, true)) {
+				skipped.push(path);
+				continue;
+			}
+			visit(join(directory, entry.name), depth - 1, active);
 		}
 	};
 
-	visit(absoluteRoot, config.maxDepth);
+	visit(absoluteRoot, config.maxDepth, inherited);
 	packages.sort((left, right) =>
 		left.rel === "." ? -1 : right.rel === "." ? 1 : left.rel.localeCompare(right.rel),
 	);

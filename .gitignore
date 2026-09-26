@@ -2,3 +2,10 @@ node_modules/
 .pi/
 *.log
 .DS_Store
+
+# The judgement cache, kept in git on purpose, the same way the joggle
+# repository keeps its own: a run with no model key replays the verdicts that
+# were already reviewed, so the judged rules answer in CI instead of being
+# left unasked. Nothing else under .joggle/ is tracked.
+.joggle/*
+!.joggle/answers.json

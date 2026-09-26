@@ -411,7 +411,9 @@ pnpm joggle
 
 The lint ruleset is the Autotelic plumb generic set, registered in
 `oxlint.config.ts`. Declared exceptions live in that file's `overrides` and in
-`joggle.config.json`'s `ignore`, each with the disagreement written down.
+`joggle.config.json`'s `ignore`, each with the disagreement written down. This
+repository declares none of the latter: every judged rule runs here, and the
+candidates it raises are declined by the judgement rather than by a path glob.
 
 joggle is an internal tool and is not published to npm. `pnpm joggle` runs the
 installed `joggle` command -- the wrapper that supplies the model key from the
@@ -423,6 +425,16 @@ ln -sf /path/to/joggle/scripts/joggle.sh ~/.local/bin/joggle
 
 That script names a path outside this repository, so it is a local-only
 convenience and `prepublishOnly` deliberately does not call it.
+
+`.joggle/answers.json` is committed on purpose, the same way the joggle
+repository keeps its own. It records the verdicts the judged rules reached, so a
+run with no model key -- a CI job, another developer's machine -- replays the
+reviewed answers instead of leaving those rules unasked. Nothing else under
+`.joggle/` is tracked.
+
+A run with neither a key nor a cached answer counts what it could not judge
+rather than printing every candidate. That is what `"unavailable": "count"` in
+`joggle.config.json` is for.
 
 ## Publishing
 
